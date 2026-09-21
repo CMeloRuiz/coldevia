@@ -1,0 +1,500 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ==========================================================================
+   ColdevIA — CSS principal
+   --------------------------------------------------------------------------
+   PALETA FINAL (5 familias de marca)
+
+   1. GRIS OSCURO — header, footer y superficies de soporte
+      --gray-950  #111318   Fondo del footer
+      --gray-900  #171A21   Superficies oscuras neutras
+      --gray-800  #1F232C   Tarjetas sobre gris oscuro
+      --gray-700  #2C313C   Bordes sobre fondos oscuros
+      --gray-600  #5B5F69   Gris del anillo del logo (decorativo, no texto)
+      --gray-400  #8C93A1   Texto secundario sobre oscuro   (5.8:1 sobre #111318)
+      --gray-300  #B7BDC8   Texto de lectura sobre oscuro   (10.6:1 sobre #111318)
+
+   2. GRIS CLARO — fondos de mini-secciones y bordes
+      --gray-200  #DCE0E7   Bordes y divisores sobre claro
+      --gray-100  #ECEFF3   Fondo de mini-sección (tecnologías)
+      --gray-50   #F5F6F9   Fondo de mini-sección (precios, logros)
+
+   3. AZUL OSCURO — fondos de las secciones principales
+      --navy-950  #08152F   Inicio del degradado de marca
+      --navy-900  #0B1836   Punto medio del degradado
+      --navy-800  #102552   Final del degradado
+      --navy-700  #17326A   Bordes y superficies elevadas sobre navy
+      --ink       #0E1526   Titulares sobre fondos claros   (17.9:1 sobre blanco)
+      --ink-soft  #454C5C   Texto de lectura sobre claro    (8.6:1 sobre blanco)
+      --ink-muted #5F6676   Texto secundario sobre claro    (5.9:1 sobre blanco)
+
+   4. BLANCO — mini-secciones y tipografía sobre oscuro
+      --white       #FFFFFF
+      --white-soft  #F4F6FB  Titulares sobre navy (17.4:1 sobre #08152F)
+
+   5. AZUL CLARO — acentos, botones y degradados
+      --blue-600  #2A57A4   Acento principal / botones  (7.0:1 con texto blanco)
+      --blue-500  #3468C0   Hover de botones            (5.4:1 con texto blanco)
+      --blue-400  #5B8FDB   Azul claro del logo (decorativo, degradados)
+      --blue-300  #7A91E3   Highlight sobre navy        (6.0:1 sobre #08152F)
+      --blue-200  #AFC0F2   Texto suave sobre navy
+      --blue-100  #E3EAFB   Fondos de íconos y chips sobre claro
+
+   Se mantuvieron #2A57A4 y #7A91E3: son el azul del logo y pasan AA/AAA.
+   Se agregó #3468C0 para hover (el anterior #3A6DC4 quedaba en 4.9:1) y
+   #5B8FDB, tomado del anillo claro del logo, para los degradados.
+
+   TIPOGRAFÍA: Outfit (títulos y jerarquía) + Roboto (texto de lectura).
+   ========================================================================== */
+
+:root {
+  /* Gris oscuro */
+  --gray-950: #111318;
+  --gray-900: #171a21;
+  --gray-800: #1f232c;
+  --gray-700: #2c313c;
+  --gray-600: #5b5f69;
+  --gray-400: #8c93a1;
+  --gray-300: #b7bdc8;
+
+  /* Gris claro */
+  --gray-200: #dce0e7;
+  --gray-100: #eceff3;
+  --gray-50: #f5f6f9;
+
+  /* Azul oscuro */
+  --navy-950: #08152f;
+  --navy-900: #0b1836;
+  --navy-800: #102552;
+  --navy-700: #17326a;
+  --ink: #0e1526;
+  --ink-soft: #454c5c;
+  --ink-muted: #5f6676;
+
+  /* Blanco */
+  --white: #ffffff;
+  --white-soft: #f4f6fb;
+
+  /* Azul claro */
+  --blue-600: #2a57a4;
+  --blue-500: #3468c0;
+  --blue-400: #5b8fdb;
+  --blue-300: #7a91e3;
+  --blue-200: #afc0f2;
+  --blue-100: #e3eafb;
+
+  /* Degradados de marca */
+  --grad-navy: linear-gradient(160deg, var(--navy-950) 0%, var(--navy-900) 45%, var(--navy-800) 100%);
+  --grad-navy-soft: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
+  --grad-accent: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-400) 100%);
+
+  /* Texto sobre oscuro */
+  --on-dark: rgba(244, 246, 251, 0.74);
+  --on-dark-muted: rgba(244, 246, 251, 0.56);
+  --line-dark: rgba(175, 192, 242, 0.14);
+
+  /* Vidrio del header encogido */
+  --glass-bg: rgba(14, 19, 34, 0.78);
+  --glass-border: rgba(175, 192, 242, 0.14);
+
+  /* Tipografía */
+  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+
+  --fs-display: clamp(2.5rem, 1.5rem + 3.8vw, 4.4rem);
+  --fs-h2: clamp(2rem, 1.35rem + 2.3vw, 3.2rem);
+  --fs-h3: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+  --fs-lead: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+
+  /* Layout */
+  --container: 1320px;
+  --gutter: clamp(20px, 4vw, 40px);
+  --section-y: clamp(84px, 10vw, 136px);
+  --header-h: 100px;
+
+  /* Radios y sombras */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(14, 21, 38, 0.06), 0 2px 8px rgba(14, 21, 38, 0.04);
+  --shadow-md: 0 10px 30px -12px rgba(14, 21, 38, 0.18);
+  --shadow-lg: 0 30px 60px -24px rgba(8, 21, 47, 0.35);
+
+  /* Movimiento */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ---------- Reset base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--white);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+::selection {
+  background: var(--blue-300);
+  color: var(--navy-950);
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue-400);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--ink);
+  font-weight: 500;
+  transform: translateY(-160%);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- Layout ---------- */
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+  scroll-margin-top: calc(var(--header-h) + 8px);
+}
+
+.section--dark {
+  background: var(--grad-navy);
+  color: var(--on-dark);
+}
+
+.section--dark h2,
+.section--dark h3 {
+  color: var(--white-soft);
+}
+
+/* ---------- Encabezados de sección ---------- */
+/* El "anillo abierto" antes de la etiqueta retoma el círculo del logo. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue-600);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  transform: rotate(-45deg);
+}
+
+.section--dark .eyebrow,
+.eyebrow--light {
+  color: var(--blue-300);
+}
+
+.section-title {
+  margin-top: 18px;
+  font-size: var(--fs-h2);
+}
+
+.section-lead {
+  margin-top: 18px;
+  max-width: 56ch;
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  --btn-bg: var(--blue-600);
+  --btn-fg: var(--white);
+  --btn-border: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  transition:
+    background-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out),
+    transform 0.25s var(--ease-out);
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.btn:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.btn--primary:hover {
+  --btn-bg: var(--blue-500);
+  box-shadow: 0 10px 24px -10px rgba(42, 87, 164, 0.7);
+}
+
+.btn--light {
+  --btn-bg: var(--white);
+  --btn-fg: var(--navy-900);
+}
+
+.btn--light:hover {
+  --btn-bg: var(--blue-100);
+}
+
+.btn--outline {
+  --btn-bg: transparent;
+  --btn-fg: var(--navy-900);
+  --btn-border: var(--gray-200);
+}
+
+.btn--outline:hover {
+  --btn-border: var(--navy-900);
+  --btn-bg: var(--navy-900);
+  --btn-fg: var(--white);
+}
+
+.btn--lg {
+  min-height: 56px;
+  padding: 14px 30px;
+  font-size: 1.05rem;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Enlace de texto con flecha */
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--blue-600);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s var(--ease-out), color 0.2s;
+}
+
+.text-link svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.text-link:hover {
+  background-size: 100% 1px;
+}
+
+.text-link:hover svg {
+  transform: translateX(3px);
+}
+
+.section--dark .text-link,
+.text-link--light {
+  color: var(--blue-200);
+}
+
+/* ==========================================================================
+   Animaciones de aparición (IntersectionObserver)
+   --------------------------------------------------------------------------
+   · El hook useRevealOnScroll agrega .is-visible al contenedor observado.
+   · Cada elemento animado declara su variante con data-reveal="…".
+   · El stagger se controla con la variable --i (índice) y --d (retardo base).
+   ========================================================================== */
+[data-reveal] {
+  opacity: 0;
+  transition-property: opacity, transform, filter, clip-path;
+  transition-duration: 0.8s;
+  transition-timing-function: var(--ease-out);
+  transition-delay: calc(var(--d, 0ms) + var(--i, 0) * 90ms);
+  will-change: opacity, transform;
+}
+
+[data-reveal='up'] {
+  transform: translate3d(0, 28px, 0);
+}
+
+[data-reveal='down'] {
+  transform: translate3d(0, -20px, 0);
+}
+
+[data-reveal='left'] {
+  transform: translate3d(-36px, 0, 0);
+}
+
+[data-reveal='right'] {
+  transform: translate3d(36px, 0, 0);
+}
+
+[data-reveal='scale'] {
+  transform: scale(0.94);
+}
+
+[data-reveal='blur'] {
+  filter: blur(10px);
+  transform: translate3d(0, 12px, 0);
+}
+
+[data-reveal='fade'] {
+  transition-duration: 1s;
+}
+
+[data-reveal='clip'] {
+  opacity: 1;
+  clip-path: inset(0 0 100% 0);
+  transition-duration: 1s;
+}
+
+[data-reveal='pop'] {
+  transform: scale(0.6);
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-duration: 0.6s;
+}
+
+.is-visible[data-reveal],
+.is-visible [data-reveal] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Solo la variante "clip" recorta; en el resto el recorte cortaría sombras y badges */
+.is-visible[data-reveal='clip'],
+.is-visible [data-reveal='clip'] {
+  /* margen negativo para no recortar la sombra del elemento */
+  clip-path: inset(-60px -60px -60px -60px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Con "reducir movimiento" activo el contenido solo aparece con un fundido,
+     sin desplazamientos. Los carruseles siguen en marcha porque su movimiento
+     continuo es parte del requerimiento de diseño. */
+  [data-reveal] {
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition-property: opacity;
+    transition-duration: 0.4s;
+  }
+}

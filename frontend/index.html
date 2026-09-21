@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta name="theme-color" content="#08152F" />
+    <meta
+      name="description"
+      content="ColdevIA desarrolla sitios web, e-commerce, plataformas SaaS, automatizaciones, infraestructura TI y agentes de IA para empresas de Colombia y Latinoamérica."
+    />
+    <title>ColdevIA · Desarrollo de software a la medida</title>
+    <!--
+      Entrada coreografiada: se arma de forma síncrona, antes del primer pintado,
+      para que el contenido no aparezca un instante sin animar. La marca "intro"
+      oculta el primer plano; useIntroSequence la reemplaza por "intro-play" cuando
+      las fuentes están listas y la quita al terminar. Con "reducir movimiento"
+      no se agrega y la página se muestra estática desde el primer frame.
+    -->
+    <script>
+      try {
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('intro')
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

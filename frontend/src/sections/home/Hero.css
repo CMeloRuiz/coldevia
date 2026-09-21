@@ -1,0 +1,279 @@
+/* ==========================================================================
+   6.1 Hero
+   --------------------------------------------------------------------------
+   SISTEMA DE ESCALADO
+   El layout de escritorio está diseñado contra un render de referencia de
+   1440 × 900 y se expresa en múltiplos de una sola unidad, --u. Así el bloque
+   escala en proporción (por ancho o por alto, lo que limite primero) sin
+   saltos ni roturas. El borde izquierdo se alinea con el .container para
+   coincidir con el logo del header, y el cuerpo tiene pisos en px para que
+   nunca quede por debajo del tamaño legible.
+
+   BREAKPOINTS (derivados del propio diseño, no de valores estándar)
+   · 993 px → el título mide 68u; por debajo de 993 px de ancho quedaría bajo
+     47 px (68 × 993/1440 ≈ 46.9) y el texto se apretaría contra la esfera.
+     Desde ahí el hero pasa a medidas fluidas y la esfera baja debajo del texto.
+   · 460 px → el CTA primario (~232 px) + separación + enlace secundario
+     (~130 px) + márgenes laterales ya no entran en una fila: se apilan.
+   · min-height 560 px → contenido (≈ 430u) + header + solapamiento de la
+     tarjeta de logros; por debajo de esa altura el hero crece en vez de
+     cortar el texto (pantallas horizontales bajas).
+   ========================================================================== */
+
+.hero {
+  /* El tope de 1 px evita que en pantallas grandes el texto siga creciendo más
+     rápido que el contenedor y desbalancee las dos columnas. */
+  --u: min(calc(100vw / 1440), calc(100dvh / 900), 1px);
+  --overlap: clamp(100px, 11vw, 130px); /* lo que la tarjeta de logros se monta encima */
+  --dy: -6; /* corrección óptica: el bloque se ve centrado un poco por encima del centro real */
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 120dvh;
+  min-height: 560px;
+  padding: var(--header-h) 0 var(--overlap);
+  overflow: hidden;
+  background: var(--navy-950);
+  color: var(--on-dark);
+  isolation: isolate;
+}
+
+@supports not (height: 100dvh) {
+  .hero {
+    --u: min(calc(100vw / 1440), calc(100vh / 900), 1px);
+    height: 120vh;
+  }
+}
+
+/* ---------- Fondo ---------- */
+.hero__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 60% at 74% 44%, rgba(16, 37, 82, 0.9) 0%, rgba(8, 21, 47, 0) 70%),
+    linear-gradient(160deg, var(--navy-950) 0%, var(--navy-900) 55%, #0a1a3c 100%);
+}
+
+/* Retícula técnica muy sutil, desvanecida hacia los bordes */
+.hero__backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(175, 192, 242, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(175, 192, 242, 0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(70% 70% at 62% 45%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(70% 70% at 62% 45%, #000 0%, transparent 78%);
+}
+
+/* ---------- Contenido (escritorio, en unidades --u) ----------
+   Texto y esfera forman un solo bloque centrado: la separación entre ambos es
+   fija (32u) y el sobrante se reparte por igual a los lados. Con columnas de
+   grilla proporcionales la esfera quedaba centrada DENTRO de su columna y el
+   hueco contra el texto crecía en pantallas bajas; con flex eso no pasa. */
+.hero__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Separación entre texto y esfera: hasta 300 px (en el render de referencia).
+     El porcentaje mide el ancho disponible: si el hueco dejaría la esfera por
+     debajo de 650u, la separación cede antes que el tamaño de la esfera
+     (620u de texto + 650u de esfera = 1270u). Nunca baja de 56u. */
+  gap: clamp(calc(56 * var(--u)), calc(100% - 1270 * var(--u)), calc(300 * var(--u)));
+  /* Aire lateral mínimo del hero (>100 px en pantallas grandes) */
+  max-width: none;
+  padding-inline: clamp(24px, 7vw, 112px);
+  transform: translateY(calc(var(--dy) * var(--u)));
+}
+
+/* El texto no se encoge: 620u es lo que necesita el renglón más largo del
+   título (613 px con la tipografía a 68 px) para no partirse. */
+.hero__content {
+  flex: 0 0 auto;
+  width: min(calc(620 * var(--u)), 100%);
+}
+
+/* La esfera sí cede espacio si hace falta. Su ancho también se limita por el
+   alto libre del hero, así en pantallas bajas se achica en vez de desbordar. */
+.hero__visual {
+  flex: 0 1 auto;
+  min-width: 0;
+  /* Tope por ancho (760u) y por alto de ventana: la esfera nunca supera lo que
+     se ve en pantalla, aunque el hero mida 120dvh. */
+  width: min(calc(760 * var(--u)), calc(100dvh - var(--header-h) - 100px));
+}
+
+@supports not (height: 100dvh) {
+  .hero__visual {
+    width: min(calc(760 * var(--u)), calc(100vh - var(--header-h) - 100px));
+  }
+}
+
+.hero__title {
+  font-size: calc(68 * var(--u));
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--white-soft);
+}
+
+/* Máscara de cada renglón: el padding deja espacio a descendentes y al subrayado */
+.ln {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.ln-i {
+  display: block;
+}
+
+.hero__accent {
+  position: relative;
+  color: var(--blue-300);
+  white-space: nowrap;
+}
+
+.hero__accent::after {
+  content: '';
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  bottom: -0.04em;
+  height: 0.11em;
+  border-radius: 999px;
+  background: var(--blue-600);
+  transform-origin: left;
+}
+
+.hero__lead {
+  max-width: max(400px, calc(520 * var(--u)));
+  margin-top: calc(26 * var(--u));
+  /* Piso de legibilidad: el cuerpo nunca baja de 16 px aunque --u se achique */
+  font-size: max(16px, calc(19.5 * var(--u)));
+  line-height: 1.6;
+  color: rgba(244, 246, 251, 0.78);
+}
+
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(14 * var(--u)) calc(32 * var(--u));
+  margin-top: calc(40 * var(--u));
+}
+
+.hero__cta {
+  min-height: 0;
+  height: max(50px, calc(58 * var(--u)));
+  padding: 0 max(25px, calc(30 * var(--u)));
+  gap: calc(12 * var(--u));
+  font-size: max(15.5px, calc(17 * var(--u)));
+}
+
+.hero__link {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  font-family: var(--font-display);
+  font-size: max(15.5px, calc(17 * var(--u)));
+  font-weight: 500;
+  color: var(--white-soft);
+  transition: color 0.2s;
+}
+
+.hero__link:hover {
+  color: var(--blue-200);
+}
+
+.hero__arw {
+  width: 0.78em;
+  height: auto;
+  flex: none;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.hero__cta:hover .hero__arw,
+.hero__link:hover .hero__arw {
+  transform: translateX(3px);
+}
+
+/* El botón base gira la flecha en diagonal; aquí se mantiene horizontal */
+.hero__cta.btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* ---------- Tablet y mobile: medidas fluidas, esfera debajo ---------- */
+@media (max-width: 992px) {
+  .hero {
+    align-items: flex-start;
+    height: auto;
+    min-height: max(100svh, 640px);
+    padding-top: calc(var(--header-h) + clamp(32px, 6vw, 56px));
+  }
+
+  .hero__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(28px, 6vw, 48px);
+    max-width: calc(var(--container) + var(--gutter) * 2);
+    padding-inline: var(--gutter);
+    transform: none;
+  }
+
+  .hero__content {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .hero__visual {
+    align-self: center;
+    width: min(480px, 88vw);
+  }
+
+  .hero__title {
+    /* Ajustado para que "Software a la medida" entre en un renglón desde 360 px */
+    font-size: clamp(2.05rem, 1.05rem + 4.5vw, 2.9rem);
+  }
+
+  .hero__lead {
+    max-width: 44ch;
+    margin-top: 20px;
+    font-size: 1.06rem;
+  }
+
+  .hero__ctas {
+    gap: 14px 28px;
+    margin-top: 30px;
+  }
+
+  .hero__cta {
+    height: 52px;
+    padding: 0 26px;
+    gap: 12px;
+    font-size: 1.02rem;
+  }
+
+  .hero__link {
+    gap: 10px;
+    font-size: 1.02rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .hero__ctas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero__link {
+    justify-content: center;
+    height: 44px;
+  }
+}

@@ -1,0 +1,76 @@
+/* ==========================================================================
+   Secuencia de entrada (ver hooks/useIntroSequence.js)
+   --------------------------------------------------------------------------
+   Solo anima el primer plano; el video de fondo nunca se anima.
+   Cada elemento declara su variante con data-intro y su momento con
+   --intro-delay (y opcionalmente --intro-dur).
+
+   Variantes:
+     line   → el renglón del título sube detrás de una máscara (.ln)
+     lift   → aparición silenciosa: sube 8 px y hace fade
+     blur   → sube, hace fade y el desenfoque se asienta en 0
+     settle → sube con un leve scale, para los botones
+
+   Línea de tiempo (s):
+     0.12 título, renglón 1 · 0.22 renglón 2 · 0.32 renglón 3
+     0.46 logo · 0.54 nav (+0.045 c/u) · 0.58 subtítulo · 0.68 hamburguesa
+     0.73 CTA del header · 0.90 CTA primario · 0.97 CTA secundario (último)
+   ========================================================================== */
+
+html.intro [data-intro] {
+  transition: none;
+}
+
+html.intro [data-intro='line'] {
+  transform: translate3d(0, 108%, 0);
+}
+
+html.intro [data-intro='lift'] {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+}
+
+html.intro [data-intro='blur'] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  filter: blur(8px);
+}
+
+html.intro [data-intro='settle'] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0) scale(0.96);
+}
+
+html.intro.intro-play [data-intro] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition-property: opacity, transform, filter;
+  transition-duration: var(--intro-dur, 0.6s);
+  transition-delay: var(--intro-delay, 0s);
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html.intro.intro-play [data-intro='line'] {
+  --intro-dur: 1.05s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.intro.intro-play [data-intro='blur'] {
+  --intro-dur: 0.85s;
+}
+
+html.intro.intro-play [data-intro='settle'] {
+  --intro-dur: 0.7s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* El subrayado de la palabra destacada se dibuja cuando su renglón ya subió */
+html.intro .hero__accent::after {
+  transform: scaleX(0);
+}
+
+html.intro.intro-play .hero__accent::after {
+  transform: scaleX(1);
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.95s;
+}

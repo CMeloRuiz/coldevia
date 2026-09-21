@@ -1,0 +1,83 @@
+/* ==========================================================================
+   6.5 Carrusel de tecnologías — mini-sección en gris claro
+   ========================================================================== */
+.tech {
+  padding-block: clamp(72px, 8vw, 110px);
+  background: var(--gray-100);
+  overflow: hidden;
+}
+
+.tech__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  align-items: end;
+  gap: 24px 64px;
+}
+
+.tech__head .section-title {
+  max-width: 20ch;
+}
+
+.tech__note {
+  max-width: 44ch;
+}
+
+.tech__rows {
+  display: grid;
+  /* minmax(0, 1fr): sin esto la columna se estira hasta el ancho completo de la
+     cinta (más de 4000 px) y la fila deja de entrar en la pantalla */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+  margin-top: clamp(40px, 5vw, 60px);
+}
+
+.tech__row {
+  min-width: 0;
+}
+
+.tech-chip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 26px 14px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+
+.tech-chip img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.tech-chip span {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+@media (max-width: 800px) {
+  .tech__head {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .tech-chip {
+    padding: 10px 18px 10px 12px;
+    gap: 10px;
+  }
+
+  .tech-chip img {
+    width: 26px;
+    height: 26px;
+  }
+
+  .tech-chip span {
+    font-size: 0.92rem;
+  }
+}

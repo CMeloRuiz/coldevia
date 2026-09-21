@@ -1,0 +1,249 @@
+/* ==========================================================================
+   Header dinámico
+   Estado inicial: ancho completo, transparente, integrado al hero.
+   .is-scrolled:   píldora de vidrio esmerilado con 20 px de margen lateral.
+   Todo el cambio se anima con transition (sin saltos).
+   ========================================================================== */
+
+.header-sentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 24px;
+  pointer-events: none;
+}
+
+.site-header {
+  --bar-duration: 0.55s;
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.site-header__bar {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: var(--header-h);
+  margin: 0;
+  /* Alinea el contenido con el .container de la página */
+  padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2));
+  border: 1px solid transparent;
+  border-radius: 0;
+  background-color: rgba(17, 21, 33, 0);
+  -webkit-backdrop-filter: blur(0) saturate(100%);
+  backdrop-filter: blur(0) saturate(100%);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  transition:
+    margin var(--bar-duration) var(--ease-out),
+    padding var(--bar-duration) var(--ease-out),
+    height var(--bar-duration) var(--ease-out),
+    border-radius var(--bar-duration) var(--ease-out),
+    border-color var(--bar-duration) var(--ease-out),
+    background-color var(--bar-duration) var(--ease-out),
+    backdrop-filter var(--bar-duration) var(--ease-out),
+    -webkit-backdrop-filter var(--bar-duration) var(--ease-out),
+    box-shadow var(--bar-duration) var(--ease-out);
+}
+
+.site-header.is-scrolled .site-header__bar {
+  height: 64px;
+  margin: 12px 20px 0;
+  padding-inline: 26px 10px;
+  border-color: var(--glass-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  box-shadow:
+    0 18px 40px -18px rgba(3, 8, 20, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- Logo ---------- */
+.site-header__logo {
+  flex: none;
+  display: block;
+  border-radius: 8px;
+}
+
+.site-header__logo img {
+  width: auto;
+  height: 54px;
+  transition: height var(--bar-duration) var(--ease-out);
+}
+
+.is-scrolled .site-header__logo img {
+  height: 36px;
+}
+
+/* ---------- Navegación ---------- */
+.site-header__nav {
+  margin-left: auto;
+}
+
+.site-header__nav ul {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-header__nav a {
+  position: relative;
+  display: block;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 400;
+  color: rgba(244, 246, 251, 0.8);
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.site-header__nav a:hover {
+  color: var(--white);
+  background-color: rgba(175, 192, 242, 0.1);
+}
+
+.site-header__nav a.active {
+  color: var(--white);
+}
+
+.site-header__nav a.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--blue-300);
+  transform: translateX(-50%);
+}
+
+/* ---------- CTA de contacto ---------- */
+.site-header__cta {
+  min-height: 44px;
+  padding: 10px 20px;
+  margin-left: 12px;
+  box-shadow: 0 8px 20px -10px rgba(42, 87, 164, 0.9);
+}
+
+/* ---------- Botón hamburguesa ---------- */
+.site-header__toggle {
+  display: none;
+  margin-left: auto;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--white);
+  background: rgba(175, 192, 242, 0.1);
+  border: 1px solid rgba(175, 192, 242, 0.16);
+  transition: background-color 0.2s;
+}
+
+.site-header__toggle:hover {
+  background: rgba(175, 192, 242, 0.18);
+}
+
+.site-header__toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------- Menú móvil ---------- */
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  :root {
+    --header-h: 84px;
+  }
+
+  .site-header__logo img {
+    height: 46px;
+  }
+
+  .site-header__nav,
+  .site-header__cta {
+    display: none;
+  }
+
+  .site-header__toggle {
+    display: grid;
+  }
+
+  .site-header.is-scrolled .site-header__bar {
+    padding-inline: 20px 8px;
+    height: 62px;
+  }
+
+  .mobile-menu {
+    pointer-events: auto;
+    display: block;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 12px;
+    right: 12px;
+    padding: 12px 12px 16px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    background: rgba(11, 20, 40, 0.94);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.98);
+    transform-origin: top center;
+    transition:
+      opacity 0.3s var(--ease-out),
+      transform 0.3s var(--ease-out),
+      visibility 0s linear 0.3s;
+  }
+
+  .is-scrolled .mobile-menu {
+    left: 20px;
+    right: 20px;
+  }
+
+  .site-header.is-open .mobile-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.3s var(--ease-out),
+      transform 0.3s var(--ease-out),
+      visibility 0s;
+  }
+
+  .mobile-menu ul {
+    margin-bottom: 12px;
+  }
+
+  .mobile-menu li + li {
+    border-top: 1px solid var(--line-dark);
+  }
+
+  .mobile-menu a:not(.btn) {
+    display: block;
+    padding: 14px 12px;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--white-soft);
+  }
+
+  .mobile-menu a.active {
+    color: var(--blue-300);
+  }
+
+  /* Al abrir el menú arriba del todo, la barra también toma fondo */
+  .site-header.is-open:not(.is-scrolled) .site-header__bar {
+    background-color: rgba(8, 21, 47, 0.9);
+  }
+}

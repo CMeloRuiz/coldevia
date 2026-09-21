@@ -1,0 +1,47 @@
+.marquee {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  /* Difumina los bordes para que los elementos entren y salgan suavemente */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee-to-left var(--marquee-duration, 40s) linear infinite;
+  will-change: transform;
+}
+
+.marquee--right .marquee__track {
+  animation-name: marquee-to-right;
+}
+
+.marquee__set {
+  display: flex;
+  flex: none;
+  align-items: stretch;
+  gap: var(--marquee-gap, 20px);
+  /* El padding reemplaza al gap entre copias: así cada copia mide lo mismo */
+  padding-right: var(--marquee-gap, 20px);
+}
+
+@keyframes marquee-to-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-to-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}

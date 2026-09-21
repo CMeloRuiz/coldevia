@@ -1,0 +1,158 @@
+/* ==========================================================================
+   Selector de moneda (header)
+   ========================================================================== */
+.currency {
+  position: relative;
+  flex: none;
+}
+
+.currency__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 5px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(175, 192, 242, 0.16);
+  background: rgba(175, 192, 242, 0.08);
+  color: var(--white-soft);
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.currency__trigger:hover {
+  background: rgba(175, 192, 242, 0.16);
+  border-color: rgba(175, 192, 242, 0.28);
+}
+
+/* Bandera recortada en círculo */
+.currency__flag {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.currency__chevron {
+  width: 15px;
+  height: 15px;
+  color: var(--blue-200);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.currency.is-open .currency__chevron {
+  transform: rotate(180deg);
+}
+
+/* ---------- Desplegable ---------- */
+.currency__list {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 10;
+  min-width: 208px;
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  background: rgba(11, 20, 40, 0.96);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  transition:
+    opacity 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out),
+    visibility 0s linear 0.22s;
+}
+
+.currency.is-open .currency__list {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out),
+    visibility 0s;
+}
+
+.currency__option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px 9px 9px;
+  border-radius: 12px;
+  color: var(--white-soft);
+  text-align: left;
+  transition: background-color 0.18s;
+}
+
+.currency__option:hover {
+  background: rgba(175, 192, 242, 0.12);
+}
+
+.currency__list [aria-selected='true'] .currency__option {
+  background: rgba(42, 87, 164, 0.5);
+}
+
+.currency__option-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.currency__option-text strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.currency__option-text small {
+  font-size: 0.78rem;
+  color: var(--on-dark-muted);
+}
+
+/* ---------- Variantes ---------- */
+/* En la barra: se oculta en móvil, donde se usa la del menú desplegable */
+@media (max-width: 960px) {
+  .currency--bar {
+    display: none;
+  }
+}
+
+/* En el menú móvil: ocupa todo el ancho y despliega hacia abajo a la izquierda */
+.currency--menu {
+  display: none;
+  margin: 4px 0 14px;
+}
+
+.currency--menu .currency__trigger {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 10px 14px 10px 10px;
+  font-size: 1rem;
+}
+
+.currency--menu .currency__chevron {
+  margin-left: auto;
+}
+
+.currency--menu .currency__list {
+  right: auto;
+  left: 0;
+  width: 100%;
+  transform-origin: top left;
+}
+
+@media (max-width: 960px) {
+  .currency--menu {
+    display: block;
+  }
+}

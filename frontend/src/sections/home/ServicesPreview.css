@@ -1,0 +1,186 @@
+/* ==========================================================================
+   6.4 Servicios (resumen) — 6 tarjetas idénticas en tamaño y estructura
+   ========================================================================== */
+.services {
+  overflow: hidden;
+}
+
+.services__glow {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  width: 900px;
+  height: 600px;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(42, 87, 164, 0.35), transparent);
+  pointer-events: none;
+}
+
+.services__head {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  align-items: end;
+  gap: 32px 64px;
+}
+
+.services__head .section-title {
+  max-width: 18ch;
+}
+
+.services__head-side p {
+  margin-bottom: 20px;
+}
+
+/* ---------- Grilla ---------- */
+.services__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr; /* todas las filas miden lo mismo */
+  gap: 20px;
+  margin-top: clamp(48px, 6vw, 72px);
+}
+
+.service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 32px;
+  border-radius: 20px;
+  border: 1px solid var(--line-dark);
+  background:
+    linear-gradient(180deg, rgba(175, 192, 242, 0.06) 0%, rgba(175, 192, 242, 0.015) 100%);
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 80% at 0% 0%, rgba(91, 143, 219, 0.18), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out);
+  pointer-events: none;
+}
+
+.service-card:hover {
+  border-color: rgba(122, 145, 227, 0.45);
+}
+
+.service-card:hover::before {
+  opacity: 1;
+}
+
+.service-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.service-card__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(42, 87, 164, 0.35);
+  border: 1px solid rgba(122, 145, 227, 0.3);
+  color: var(--blue-200);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.service-card:hover .service-card__icon {
+  background: var(--blue-600);
+  color: var(--white);
+}
+
+.service-card__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.service-card__index {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--on-dark-muted);
+}
+
+.service-card h3 {
+  margin-top: 28px;
+  font-size: var(--fs-h3);
+}
+
+.service-card p {
+  margin-top: 12px;
+  font-size: 0.97rem;
+}
+
+.service-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 24px;
+  padding-right: 52px; /* espacio para el botón de flecha */
+}
+
+.service-card__tags li {
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(175, 192, 242, 0.08);
+  font-size: 0.8rem;
+  color: var(--blue-200);
+}
+
+.service-card__link {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line-dark);
+  color: var(--white-soft);
+  transition: background-color 0.3s, border-color 0.3s, transform 0.3s var(--ease-out);
+}
+
+.service-card__link svg {
+  width: 18px;
+  height: 18px;
+}
+
+.service-card:hover .service-card__link {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--navy-900);
+  transform: rotate(45deg);
+}
+
+@media (max-width: 1024px) {
+  .services__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .services__head {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .services__grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+
+  .service-card {
+    padding: 26px;
+  }
+}
