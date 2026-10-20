@@ -3,9 +3,24 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import logo from '../../assets/images/logo_header.png'
 import { NAV_LINKS } from '../../data/site'
-import CurrencySwitcher from './CurrencySwitcher'
 import { useSectionNavigation } from '../../hooks/useSectionNavigation'
+import { useLanguage } from '../../i18n/language-context'
+import CurrencySwitcher from './CurrencySwitcher'
+import LanguageSwitcher from './LanguageSwitcher'
 import './Header.css'
+
+/**
+ * Destino del botón "Contacto".
+ *
+ * Mientras no exista la página /contacto, el botón lleva al formulario del
+ * final del Home (sección con id="contacto"). El desplazamiento respeta el
+ * header fijo gracias a `scroll-margin-top` en `.section` (ver index.css).
+ *
+ * PARA CAMBIARLO A LA PÁGINA DEDICADA: reemplaza esta constante por
+ *   const CONTACT_TARGET = { type: 'route', to: '/contacto' }
+ * El resto del componente ya contempla las dos variantes.
+ */
+const CONTACT_TARGET = { type: 'section', id: 'contacto' }
 
 /**
  * Header dinámico.
@@ -23,6 +38,7 @@ export default function Header() {
   const [menuPath, setMenuPath] = useState(null)
   const { pathname } = useLocation()
   const goToSection = useSectionNavigation()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const sentinel = sentinelRef.current
@@ -60,12 +76,31 @@ export default function Header() {
   const renderLink = (item) =>
     item.section ? (
       <a href={`/#${item.section}`} onClick={(event) => handleSectionClick(event, item.section)}>
-        {item.label}
+        {t(item.labelKey)}
       </a>
     ) : (
       <NavLink to={item.to} onClick={closeMenu}>
-        {item.label}
+        {t(item.labelKey)}
       </NavLink>
+    )
+
+  /** Botón de contacto: sección del Home o ruta propia, según CONTACT_TARGET. */
+  const renderContactButton = (className, extra = {}) =>
+    CONTACT_TARGET.type === 'section' ? (
+      <a
+        href={`/#${CONTACT_TARGET.id}`}
+        className={className}
+        onClick={(event) => handleSectionClick(event, CONTACT_TARGET.id)}
+        {...extra}
+      >
+        {t('header.contact')}
+        <ArrowUpRight aria-hidden="true" />
+      </a>
+    ) : (
+      <Link to={CONTACT_TARGET.to} className={className} onClick={closeMenu} {...extra}>
+        {t('header.contact')}
+        <ArrowUpRight aria-hidden="true" />
+      </Link>
     )
 
   const classes = ['site-header', isScrolled && 'is-scrolled', menuOpen && 'is-open']
@@ -81,7 +116,7 @@ export default function Header() {
           <Link
             to="/"
             className="site-header__logo"
-            aria-label="ColdevIA, ir al inicio"
+            aria-label={t('header.logoAria')}
             onClick={closeMenu}
             data-intro="lift"
             style={{ '--intro-delay': '0.46s', '--intro-dur': '0.62s' }}
@@ -89,11 +124,11 @@ export default function Header() {
             <img src={logo} alt="ColdevIA" width="408" height="140" />
           </Link>
 
-          <nav className="site-header__nav" aria-label="Navegación principal">
+          <nav className="site-header__nav" aria-label={t('header.navAria')}>
             <ul>
               {NAV_LINKS.map((item, index) => (
                 <li
-                  key={item.label}
+                  key={item.id}
                   data-intro="lift"
                   style={{ '--intro-delay': `${0.54 + index * 0.045}s`, '--intro-dur': '0.55s' }}
                 >
@@ -103,29 +138,29 @@ export default function Header() {
             </ul>
           </nav>
 
-          {/* Selector de moneda: afecta los precios de la sección "Planes y precios" */}
+          {/* Idioma y moneda son independientes entre sí */}
+          <LanguageSwitcher
+            variant="bar"
+            data-intro="lift"
+            style={{ '--intro-delay': '0.69s', '--intro-dur': '0.55s' }}
+          />
           <CurrencySwitcher
             variant="bar"
             data-intro="lift"
             style={{ '--intro-delay': '0.71s', '--intro-dur': '0.55s' }}
           />
 
-          <Link
-            to="/contacto"
-            className="btn btn--primary site-header__cta"
-            data-intro="settle"
-            style={{ '--intro-delay': '0.73s', '--intro-dur': '0.55s' }}
-          >
-            Contacto
-            <ArrowUpRight aria-hidden="true" />
-          </Link>
+          {renderContactButton('btn btn--primary site-header__cta', {
+            'data-intro': 'settle',
+            style: { '--intro-delay': '0.73s', '--intro-dur': '0.55s' },
+          })}
 
           <button
             type="button"
             className="site-header__toggle"
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
-            aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-label={menuOpen ? t('header.closeMenu') : t('header.openMenu')}
             onClick={openMenu}
             data-intro="lift"
             style={{ '--intro-delay': '0.68s', '--intro-dur': '0.55s' }}
@@ -137,14 +172,12 @@ export default function Header() {
         <div id="mobile-menu" className="mobile-menu" inert={!menuOpen}>
           <ul>
             {NAV_LINKS.map((item) => (
-              <li key={item.label}>{renderLink(item)}</li>
+              <li key={item.id}>{renderLink(item)}</li>
             ))}
           </ul>
+          <LanguageSwitcher variant="menu" onSelect={closeMenu} />
           <CurrencySwitcher variant="menu" onSelect={closeMenu} />
-          <Link to="/contacto" className="btn btn--primary btn--block" onClick={closeMenu}>
-            Contacto
-            <ArrowUpRight aria-hidden="true" />
-          </Link>
+          {renderContactButton('btn btn--primary btn--block')}
         </div>
       </header>
     </>

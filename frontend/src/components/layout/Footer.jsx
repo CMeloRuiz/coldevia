@@ -3,6 +3,7 @@ import { Clock, Mail, Phone } from 'lucide-react'
 import logo from '../../assets/images/logo_header.png'
 import { CONTACT, COUNTRIES, SOCIALS } from '../../data/site'
 import { SERVICES } from '../../data/services'
+import { useT } from '../../i18n/language-context'
 import Reveal from '../ui/Reveal'
 import { FacebookIcon, GithubIcon, InstagramIcon, LinkedinIcon, WhatsappIcon } from '../ui/BrandIcons'
 import './Footer.css'
@@ -15,6 +16,7 @@ const SOCIAL_ICONS = {
 }
 
 export default function Footer() {
+  const t = useT()
   const year = new Date().getFullYear()
 
   return (
@@ -22,14 +24,11 @@ export default function Footer() {
       <div className="container">
         <Reveal className="footer-grid">
           <div className="footer-brand" data-reveal="up">
-            <Link to="/" aria-label="ColdevIA, ir al inicio" className="footer-brand__logo">
+            <Link to="/" aria-label={t('header.logoAria')} className="footer-brand__logo">
               <img src={logo} alt="ColdevIA" width="408" height="140" loading="lazy" />
             </Link>
-            <p>
-              Desarrollamos software a la medida para empresas que quieren vender más, operar mejor y crecer con
-              tecnología.
-            </p>
-            <ul className="footer-social" aria-label="Redes sociales">
+            <p>{t('footer.tagline')}</p>
+            <ul className="footer-social" aria-label={t('footer.socialAria')}>
               {SOCIALS.map(({ name, href, icon }) => {
                 const Icon = SOCIAL_ICONS[icon]
                 return (
@@ -44,18 +43,18 @@ export default function Footer() {
           </div>
 
           <div className="footer-col" data-reveal="up" style={{ '--i': 1 }}>
-            <h3>Servicios</h3>
+            <h3>{t('footer.services')}</h3>
             <ul>
               {SERVICES.map((service) => (
-                <li key={service.title}>
-                  <Link to="/servicios">{service.title}</Link>
+                <li key={service.id}>
+                  <Link to="/servicios">{t(`services.items.${service.id}.title`)}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="footer-col" data-reveal="up" style={{ '--i': 2 }}>
-            <h3>Contacto</h3>
+            <h3>{t('footer.contact')}</h3>
             <ul className="footer-contact">
               <li>
                 <Mail aria-hidden="true" />
@@ -68,24 +67,24 @@ export default function Footer() {
               <li>
                 <WhatsappIcon />
                 <a href={CONTACT.whatsappHref} target="_blank" rel="noreferrer">
-                  WhatsApp
+                  {t('footer.whatsapp')}
                 </a>
               </li>
               <li>
                 <Clock aria-hidden="true" />
-                <span>{CONTACT.hours}</span>
+                <span>{t('footer.hours')}</span>
               </li>
             </ul>
           </div>
 
           <div className="footer-col" data-reveal="up" style={{ '--i': 3 }}>
-            <h3>Operamos en</h3>
+            <h3>{t('footer.countries')}</h3>
             <ul className="footer-countries">
               {COUNTRIES.map((country) => (
-                <li key={country.name}>
+                <li key={country.id}>
                   <img src={country.flag} alt="" width="24" height="16" loading="lazy" />
                   <div>
-                    <strong>{country.name}</strong>
+                    <strong>{t(country.nameKey)}</strong>
                     <span>{country.address}</span>
                     <a href={country.phoneHref}>{country.phone}</a>
                   </div>
@@ -96,7 +95,7 @@ export default function Footer() {
         </Reveal>
 
         <div className="footer-bottom">
-          <p>© {year} ColdevIA. Todos los derechos reservados.</p>
+          <p>{t('footer.rights', { year })}</p>
         </div>
       </div>
     </footer>

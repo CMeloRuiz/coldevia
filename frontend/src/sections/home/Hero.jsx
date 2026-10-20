@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import HeroSphere from './HeroSphere'
+import { useT } from '../../i18n/language-context'
 import './Hero.css'
 
 // Flecha fina de los CTA (trazo de 1.35 px, escala con el tamaño de fuente)
@@ -25,6 +26,8 @@ const Line = ({ delay, children }) => (
 )
 
 export default function Hero() {
+  const t = useT()
+
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="hero__backdrop" aria-hidden="true" />
@@ -32,16 +35,15 @@ export default function Hero() {
       <div className="container hero__inner">
         <div className="hero__content">
           <h1 id="hero-title" className="hero__title">
-            <Line delay="0.12s">Software a la medida</Line>
+            <Line delay="0.12s">{t('hero.titleLine1')}</Line>
             <Line delay="0.22s">
-              que hace <span className="hero__accent">crecer</span>
+              {t('hero.titleLine2a')} <span className="hero__accent">{t('hero.titleAccent')}</span>
             </Line>
-            <Line delay="0.32s">tu negocio</Line>
+            <Line delay="0.32s">{t('hero.titleLine3')}</Line>
           </h1>
 
           <p className="hero__lead" data-intro="blur" style={{ '--intro-delay': '0.58s' }}>
-            Sitios web, e-commerce, plataformas SaaS, automatizaciones y agentes de IA para que vendas más y operes
-            mejor.
+            {t('hero.lead')}
           </p>
 
           <div className="hero__ctas">
@@ -51,7 +53,7 @@ export default function Hero() {
               data-intro="settle"
               style={{ '--intro-delay': '0.9s' }}
             >
-              Agenda una asesoría
+              {t('hero.ctaPrimary')}
               <Arrow />
             </Link>
             <Link
@@ -61,7 +63,7 @@ export default function Hero() {
               data-intro-last
               style={{ '--intro-delay': '0.97s' }}
             >
-              Ver servicios
+              {t('hero.ctaSecondary')}
               <Arrow />
             </Link>
           </div>
@@ -69,7 +71,7 @@ export default function Hero() {
 
         {/* Esfera de puntos conectados: gira sola y reacciona al mouse */}
         <div className="hero__visual" data-intro="lift" style={{ '--intro-delay': '0.5s', '--intro-dur': '1.1s' }}>
-          <HeroSphere />
+          <HeroSphere label={t('hero.sphereAria')} />
         </div>
       </div>
     </section>

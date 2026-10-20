@@ -3,10 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#08152F" />
+
+    <!-- Favicons. El lang del <html> y la descripción los actualiza LanguageProvider. -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <meta name="theme-color" content="#08152F" />
+
     <meta
       name="description"
       content="ColdevIA desarrolla sitios web, e-commerce, plataformas SaaS, automatizaciones, infraestructura TI y agentes de IA para empresas de Colombia y Latinoamérica."
@@ -16,10 +24,16 @@
     <!-- Dominio público del sitio: https://coldevia.com (la API sigue en Render) -->
     <link rel="canonical" href="https://coldevia.com/" />
 
+    <!-- Los dos idiomas se sirven desde la misma dirección; ?lang=en marca el inglés -->
+    <link rel="alternate" hreflang="es" href="https://coldevia.com/" />
+    <link rel="alternate" hreflang="en" href="https://coldevia.com/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://coldevia.com/" />
+
     <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ColdevIA" />
     <meta property="og:locale" content="es_CO" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:url" content="https://coldevia.com/" />
     <meta property="og:title" content="ColdevIA · Desarrollo de software a la medida" />
     <meta
@@ -39,6 +53,54 @@
       content="ColdevIA desarrolla sitios web, e-commerce, plataformas SaaS, automatizaciones, infraestructura TI y agentes de IA para empresas de Colombia y Latinoamérica."
     />
     <meta name="twitter:image" content="https://coldevia.com/og-image.png" />
+
+    <!-- Datos estructurados: ficha de la organización para buscadores -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "ColdevIA",
+        "url": "https://coldevia.com",
+        "logo": "https://coldevia.com/icon-512.png",
+        "image": "https://coldevia.com/og-image.png",
+        "description": "Desarrollo de sitios web, e-commerce, plataformas SaaS, automatizaciones, infraestructura TI y agentes de IA.",
+        "email": "info@coldevia.com",
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "telephone": "+57-320-829-1613",
+            "areaServed": "CO",
+            "availableLanguage": ["Spanish", "English"]
+          },
+          {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "telephone": "+54-11-6117-3398",
+            "areaServed": "AR",
+            "availableLanguage": ["Spanish", "English"]
+          },
+          {
+            "@type": "ContactPoint",
+            "contactType": "sales",
+            "telephone": "+1-325-203-4791",
+            "areaServed": "US",
+            "availableLanguage": ["English", "Spanish"]
+          }
+        ],
+        "address": [
+          {
+            "@type": "PostalAddress",
+            "addressLocality": "Villapinzón",
+            "addressRegion": "Cundinamarca",
+            "addressCountry": "CO"
+          },
+          { "@type": "PostalAddress", "addressLocality": "Palermo", "addressRegion": "CABA", "addressCountry": "AR" },
+          { "@type": "PostalAddress", "addressLocality": "Norfolk", "addressRegion": "Virginia", "addressCountry": "US" }
+        ]
+      }
+    </script>
+
     <!--
       Entrada coreografiada: se arma de forma síncrona, antes del primer pintado,
       para que el contenido no aparezca un instante sin animar. La marca "intro"

@@ -3,14 +3,17 @@ import { ArrowRight, ArrowUpRight, Check } from 'lucide-react'
 import Reveal from '../../components/ui/Reveal'
 import SectionHeading from '../../components/ui/SectionHeading'
 import { FEATURED_PROJECTS } from '../../data/projects'
+import { useT } from '../../i18n/language-context'
 import './FeaturedProjects.css'
 
-// Para cambiar los proyectos, edita src/data/projects.js (no hace falta tocar este archivo).
+// Enlace e imagen: src/data/projects.js · Textos: projects.items.<id> en los diccionarios
 
 const displayUrl = (url) => url.replace(/^https?:\/\//, '').replace(/\/$/, '')
 
-function ProjectCard({ project, index }) {
-  const { name, category, url, description, includes, roadmap, image } = project
+function ProjectCard({ project, index, t }) {
+  const { id, name, url, image } = project
+  const includes = t(`projects.items.${id}.includes`)
+  const roadmap = t(`projects.items.${id}.roadmap`)
 
   return (
     <li className="project" data-reveal="up" style={{ '--i': index }}>
@@ -24,25 +27,25 @@ function ProjectCard({ project, index }) {
             <p>{displayUrl(url)}</p>
           </div>
           <div className="project__media">
-            <img src={image} alt={`Página de inicio de ${name}`} width="1340" height="594" loading="lazy" />
+            <img src={image} alt={t('projects.imageAlt', { name })} width="1340" height="594" loading="lazy" />
           </div>
         </div>
 
         <div className="project__body">
           <div className="project__head">
-            <span className="project__category">{category}</span>
+            <span className="project__category">{t(`projects.items.${id}.category`)}</span>
             <span className="project__arrow" aria-hidden="true">
               <ArrowUpRight />
             </span>
           </div>
           <h3>
             {name}
-            <span className="sr-only"> (abre el sitio en una pestaña nueva)</span>
+            <span className="sr-only">{t('projects.newTab')}</span>
           </h3>
-          <p className="project__desc">{description}</p>
+          <p className="project__desc">{t(`projects.items.${id}.description`)}</p>
 
           <div className="project__scope">
-            <p className="project__label">Incluye hoy</p>
+            <p className="project__label">{t('projects.includesLabel')}</p>
             <ul className="project__includes">
               {includes.map((item) => (
                 <li key={item}>
@@ -54,7 +57,7 @@ function ProjectCard({ project, index }) {
           </div>
 
           <div className="project__roadmap">
-            <span className="project__badge">Próxima etapa</span>
+            <span className="project__badge">{t('projects.roadmapLabel')}</span>
             <p>{roadmap.join(' · ')}</p>
           </div>
         </div>
@@ -64,25 +67,27 @@ function ProjectCard({ project, index }) {
 }
 
 export default function FeaturedProjects() {
+  const t = useT()
+
   return (
     <section className="section projects" aria-labelledby="projects-title">
       <div className="container">
         <Reveal className="projects__head">
           <SectionHeading
             id="projects-title"
-            eyebrow="Proyectos destacados"
-            title="Negocios reales que ya crecen con nosotros"
+            eyebrow={t('projects.eyebrow')}
+            title={t('projects.title')}
             reveal="up"
           />
           <Link to="/proyectos" className="text-link" data-reveal="up" style={{ '--i': 2 }}>
-            Ver todos los proyectos
+            {t('projects.allLink')}
             <ArrowRight aria-hidden="true" />
           </Link>
         </Reveal>
 
         <Reveal as="ul" className="projects__grid" threshold={0.12}>
           {FEATURED_PROJECTS.map((project, index) => (
-            <ProjectCard key={project.name} project={project} index={index} />
+            <ProjectCard key={project.id} project={project} index={index} t={t} />
           ))}
         </Reveal>
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { CURRENCIES, getCurrency } from '../../data/currencies'
 import { useCurrency } from '../../context/currency-context'
+import { useT } from '../../i18n/language-context'
 import './CurrencySwitcher.css'
 
 /**
@@ -13,6 +14,7 @@ import './CurrencySwitcher.css'
  */
 export default function CurrencySwitcher({ variant = 'bar', onSelect, ...rest }) {
   const { currency, setCurrency } = useCurrency()
+  const t = useT()
   const [isOpen, setIsOpen] = useState(false)
   const rootRef = useRef(null)
   const buttonRef = useRef(null)
@@ -65,7 +67,7 @@ export default function CurrencySwitcher({ variant = 'bar', onSelect, ...rest })
         className="currency__trigger"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        aria-label={`Moneda: ${active.name}. Cambiar moneda`}
+        aria-label={t('header.currency.ariaLabel', { name: active.name })}
         onClick={() => setIsOpen((open) => !open)}
       >
         <img className="currency__flag" src={active.flag} alt="" width="28" height="28" />
@@ -76,7 +78,7 @@ export default function CurrencySwitcher({ variant = 'bar', onSelect, ...rest })
       <ul
         className="currency__list"
         role="listbox"
-        aria-label="Moneda de los precios"
+        aria-label={t('header.currency.listLabel')}
         ref={listRef}
         onKeyDown={onListKeyDown}
         inert={!isOpen}

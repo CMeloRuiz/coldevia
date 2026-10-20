@@ -11,6 +11,9 @@ const SERVICES = [
   'Agentes de IA',
 ]
 
+// Idiomas del selector del sitio; cualquier otro valor se guarda como 'es'
+const LANGUAGES = ['es', 'en']
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
 const PHONE_RE = /^[+\d][\d\s()-]{6,19}$/
 
@@ -46,12 +49,18 @@ export async function createContactRequest(req, res, next) {
       return res.status(422).json({ error: 'Revisa los datos del formulario.', errors })
     }
 
-    const saved = await saveContactRequest({ ...data, source: clean(req.body.source) || 'home' })
+    // Idioma desde el que se envió el formulario: define en qué idioma responder
+    const language = LANGUAGES.includes(clean(req.body.language)) ? clean(req.body.language) : 'es'
+    const saved = await saveContactRequest({
+      ...data,
+      source: clean(req.body.source) || 'home',
+      language,
+    })
 
     // El correo no debe tumbar la solicitud: si falla, ya quedó guardada.
     let notified = false
     try {
-      const result = await sendContactNotification(data)
+      const result = await sendContactNotification({ ...data, language })
       notified = result.sent
     } catch (error) {
       console.error('[mail] No se pudo enviar la notificación:', error.message)

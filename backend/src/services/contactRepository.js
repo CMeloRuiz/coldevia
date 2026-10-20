@@ -15,10 +15,18 @@ const FALLBACK_FILE = path.join(FALLBACK_DIR, 'contact-requests.jsonl')
 export async function saveContactRequest(data) {
   if (pool) {
     const { rows } = await pool.query(
-      `INSERT INTO contact_requests (name, email, phone, service, message, source)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO contact_requests (name, email, phone, service, message, source, language)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, created_at`,
-      [data.name, data.email, data.phone, data.service, data.message || null, data.source ?? 'home'],
+      [
+        data.name,
+        data.email,
+        data.phone,
+        data.service,
+        data.message || null,
+        data.source ?? 'home',
+        data.language ?? 'es',
+      ],
     )
     return { id: rows[0].id, createdAt: rows[0].created_at, storage: 'postgres' }
   }

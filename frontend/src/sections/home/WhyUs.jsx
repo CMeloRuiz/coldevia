@@ -2,47 +2,34 @@ import { ArrowRight, Check, Gauge, Handshake, LifeBuoy, Puzzle, CalendarCheck } 
 import { Link } from 'react-router-dom'
 import Reveal from '../../components/ui/Reveal'
 import SectionHeading from '../../components/ui/SectionHeading'
+import { useT } from '../../i18n/language-context'
 import './WhyUs.css'
 
+// Los textos están en why.reasons.<id> y why.featured de los diccionarios
 const REASONS = [
-  {
-    icon: Puzzle,
-    title: 'Tecnología a la medida',
-    text: 'Nada de plantillas: elegimos el stack según tu caso, tu presupuesto y hacia dónde quieres crecer.',
-  },
-  {
-    icon: CalendarCheck,
-    title: 'Entregas por etapas',
-    text: 'Trabajamos en ciclos cortos y ves avances reales cada semana. Siempre sabes en qué punto está tu proyecto.',
-  },
-  {
-    icon: Gauge,
-    title: 'Rendimiento y seguridad',
-    text: 'Sitios rápidos, buenas prácticas de seguridad y SEO técnico desde la primera línea de código.',
-  },
-  {
-    icon: LifeBuoy,
-    title: 'Soporte después del lanzamiento',
-    text: 'No desaparecemos al entregar: medimos, corregimos y mejoramos contigo mientras tu negocio crece.',
-  },
+  { id: 'custom', icon: Puzzle },
+  { id: 'stages', icon: CalendarCheck },
+  { id: 'performance', icon: Gauge },
+  { id: 'support', icon: LifeBuoy },
 ]
 
-const FEATURED_POINTS = ['Estrategia, diseño y desarrollo', 'Comunicación directa y sin rodeos', 'Un responsable para todo el proyecto']
-
 export default function WhyUs() {
+  const t = useT()
+  const points = t('why.featured.points')
+
   return (
     <section className="section why" aria-labelledby="why-title">
       <div className="container why__grid">
         <Reveal className="why__intro">
           <SectionHeading
             id="why-title"
-            eyebrow="¿Por qué elegirnos?"
-            title="Un equipo que entiende tu negocio antes de escribir código"
-            lead="La tecnología es el medio. Lo que construimos contigo es una herramienta que genere resultados medibles para tu empresa."
+            eyebrow={t('why.eyebrow')}
+            title={t('why.title')}
+            lead={t('why.lead')}
             reveal="left"
           />
           <Link to="/acerca-de" className="text-link why__link" data-reveal="left" style={{ '--i': 3 }}>
-            Conoce al equipo
+            {t('why.teamLink')}
             <ArrowRight aria-hidden="true" />
           </Link>
         </Reveal>
@@ -53,13 +40,10 @@ export default function WhyUs() {
               <Handshake aria-hidden="true" />
             </span>
             <div>
-              <h3>Acompañamiento de principio a fin</h3>
-              <p>
-                Un solo equipo se encarga de la estrategia, el diseño, el desarrollo y el soporte. Sin intermediarios
-                ni tercerizaciones: hablas directamente con quienes construyen tu producto.
-              </p>
+              <h3>{t('why.featured.title')}</h3>
+              <p>{t('why.featured.text')}</p>
               <ul>
-                {FEATURED_POINTS.map((point) => (
+                {points.map((point) => (
                   <li key={point}>
                     <Check aria-hidden="true" />
                     {point}
@@ -70,13 +54,13 @@ export default function WhyUs() {
           </Reveal>
 
           <Reveal as="ul" className="why-list">
-            {REASONS.map(({ icon: Icon, title, text }, index) => (
-              <li key={title} className="why-item" data-reveal="up" style={{ '--i': index }}>
+            {REASONS.map(({ id, icon: Icon }, index) => (
+              <li key={id} className="why-item" data-reveal="up" style={{ '--i': index }}>
                 <span className="why-item__icon">
                   <Icon aria-hidden="true" />
                 </span>
-                <h3>{title}</h3>
-                <p>{text}</p>
+                <h3>{t(`why.reasons.${id}.title`)}</h3>
+                <p>{t(`why.reasons.${id}.text`)}</p>
               </li>
             ))}
           </Reveal>

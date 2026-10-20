@@ -7,12 +7,17 @@ import './index.css'
 import './styles/intro.css'
 import App from './App.jsx'
 import CurrencyProvider from './context/CurrencyProvider.jsx'
+import LanguageProvider from './i18n/LanguageProvider.jsx'
 
+// CurrencyProvider va por fuera: LanguageProvider consulta la moneda para
+// sugerir USD cuando alguien pasa a inglés sin haber elegido una.
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <CurrencyProvider>
-        <App />
+        <LanguageProvider>
+          <App />
+        </LanguageProvider>
       </CurrencyProvider>
     </BrowserRouter>
   </StrictMode>,

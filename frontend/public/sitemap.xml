@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://coldevia.com/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://coldevia.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://coldevia.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://coldevia.com/" />
+    <lastmod>2026-10-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://coldevia.com/servicios</loc>
-    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://coldevia.com/servicios" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://coldevia.com/servicios?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://coldevia.com/servicios" />
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://coldevia.com/proyectos</loc>
-    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://coldevia.com/proyectos" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://coldevia.com/proyectos?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://coldevia.com/proyectos" />
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://coldevia.com/acerca-de</loc>
-    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://coldevia.com/acerca-de" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://coldevia.com/acerca-de?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://coldevia.com/acerca-de" />
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://coldevia.com/contacto</loc>
-    <lastmod>2026-10-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://coldevia.com/contacto" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://coldevia.com/contacto?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://coldevia.com/contacto" />
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

@@ -126,7 +126,7 @@ function createDotSprite() {
 
 const LINK_BUCKETS = [0.1, 0.15, 0.21, 0.28, 0.37, 0.48]
 
-export default function HeroSphere() {
+export default function HeroSphere({ label }) {
   const hostRef = useRef(null)
   const canvasRef = useRef(null)
 
@@ -376,7 +376,7 @@ export default function HeroSphere() {
   }, [])
 
   return (
-    <div className="hero-sphere" ref={hostRef} aria-hidden="true">
+    <div className="hero-sphere" ref={hostRef} role="img" aria-label={label}>
       <canvas ref={canvasRef} className="hero-sphere__canvas" />
     </div>
   )

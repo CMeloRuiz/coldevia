@@ -2,7 +2,8 @@ import { useRef, useState } from 'react'
 import { AlertCircle, ArrowUpRight, Check, Clock, FileText, ShieldCheck } from 'lucide-react'
 import Reveal from '../../components/ui/Reveal'
 import SectionHeading from '../../components/ui/SectionHeading'
-import { CONTACT_SERVICES } from '../../data/contact-services'
+import { CONTACT_SERVICES, CONTACT_SERVICE_VALUES } from '../../data/contact-services'
+import { useLanguage } from '../../i18n/language-context'
 import './ContactForm.css'
 
 // En desarrollo, Vite redirige /api al backend (ver vite.config.js).
@@ -14,28 +15,28 @@ const PHONE_RE = /^[+\d][\d\s()-]{6,19}$/
 
 const EMPTY = { name: '', email: '', phone: '', service: '', message: '', website: '' }
 
-const REASSURANCES = [
-  { icon: Clock, text: 'Te respondemos en menos de 24 horas hábiles.' },
-  { icon: FileText, text: 'Recibes una propuesta con alcance y tiempos, sin costo.' },
-  { icon: ShieldCheck, text: 'Tus datos se usan solo para contactarte.' },
-]
+const REASSURANCES = [Clock, FileText, ShieldCheck]
 
 function validate(values) {
   const errors = {}
-  if (values.name.trim().length < 2) errors.name = 'Escribe tu nombre completo.'
-  if (!EMAIL_RE.test(values.email.trim())) errors.email = 'Revisa el correo electrónico.'
-  if (!PHONE_RE.test(values.phone.trim())) errors.phone = 'Incluye un teléfono válido, con indicativo.'
-  if (!CONTACT_SERVICES.includes(values.service)) errors.service = 'Elige el servicio que te interesa.'
-  if (values.message.trim().length > 1500) errors.message = 'El mensaje es demasiado largo.'
+  if (values.name.trim().length < 2) errors.name = 'name'
+  if (!EMAIL_RE.test(values.email.trim())) errors.email = 'email'
+  if (!PHONE_RE.test(values.phone.trim())) errors.phone = 'phone'
+  if (!CONTACT_SERVICE_VALUES.includes(values.service)) errors.service = 'service'
+  if (values.message.trim().length > 1500) errors.message = 'message'
   return errors
 }
 
 export default function ContactForm() {
+  const { t, language } = useLanguage()
   const [values, setValues] = useState(EMPTY)
+  // Cada error guarda la CLAVE del mensaje, no el texto: así el aviso cambia
+  // de idioma si la persona cambia el selector con el formulario ya validado.
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
-  const [serverError, setServerError] = useState('')
+  const [serverErrorKey, setServerErrorKey] = useState('')
   const formRef = useRef(null)
+  const points = t('contact.points')
 
   const update = (field) => (event) => {
     const { value } = event.target
@@ -61,33 +62,32 @@ export default function ContactForm() {
     }
 
     setStatus('sending')
-    setServerError('')
+    setServerErrorKey('')
 
     try {
       const response = await fetch(`${API_URL}/api/contacto`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...values, source: 'home' }),
+        // `language` le dice al backend en qué idioma responderle al cliente
+        body: JSON.stringify({ ...values, source: 'home', language }),
       })
       const payload = await response.json().catch(() => ({}))
 
       if (response.status === 422 && payload.errors) {
-        setErrors(payload.errors)
-        focusFirstError(payload.errors)
+        // El backend devuelve la clave del campo; el texto lo pone el idioma activo
+        const mapped = Object.fromEntries(Object.keys(payload.errors).map((field) => [field, field]))
+        setErrors(mapped)
+        focusFirstError(mapped)
         setStatus('idle')
         return
       }
-      if (!response.ok) throw new Error(payload.error || 'No se pudo enviar la solicitud.')
+      if (!response.ok) throw new Error('generic')
 
       setValues(EMPTY)
       setErrors({})
       setStatus('sent')
     } catch (error) {
-      setServerError(
-        error.message === 'Failed to fetch'
-          ? 'No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.'
-          : error.message,
-      )
+      setServerErrorKey(error.message === 'Failed to fetch' ? 'network' : 'generic')
       setStatus('error')
     }
   }
@@ -101,24 +101,34 @@ export default function ContactForm() {
     className: errors[field] ? 'is-invalid' : undefined,
   })
 
+  const fieldError = (field) =>
+    errors[field] ? (
+      <span className="field__error" id={`${field}-error`}>
+        {t(`contact.errors.${errors[field]}`)}
+      </span>
+    ) : null
+
   return (
-    <section className="section section--dark contact" aria-labelledby="contact-title">
+    <section id="contacto" className="section section--dark contact" aria-labelledby="contact-title">
       <div className="container contact__grid">
         <Reveal className="contact__intro">
           <SectionHeading
             id="contact-title"
-            eyebrow="Empecemos"
-            title="Cuéntanos qué necesitas y te armamos una propuesta"
-            lead="Déjanos tus datos y el servicio que te interesa. Revisamos tu caso y te escribimos con los siguientes pasos."
+            eyebrow={t('contact.eyebrow')}
+            title={t('contact.title')}
+            lead={t('contact.lead')}
             reveal="left"
           />
           <ul className="contact__points" data-reveal="left" style={{ '--i': 3 }}>
-            {REASSURANCES.map(({ icon: Icon, text }) => (
-              <li key={text}>
-                <Icon aria-hidden="true" />
-                {text}
-              </li>
-            ))}
+            {points.map((text, index) => {
+              const Icon = REASSURANCES[index]
+              return (
+                <li key={text}>
+                  <Icon aria-hidden="true" />
+                  {text}
+                </li>
+              )
+            })}
           </ul>
         </Reveal>
 
@@ -128,99 +138,87 @@ export default function ContactForm() {
               <span className="contact__success-icon">
                 <Check aria-hidden="true" />
               </span>
-              <h3>Solicitud enviada</h3>
-              <p>Gracias por escribirnos. Te respondemos al correo que nos dejaste en menos de 24 horas hábiles.</p>
+              <h3>{t('contact.success.title')}</h3>
+              <p>{t('contact.success.text')}</p>
               <button type="button" className="btn btn--outline" onClick={() => setStatus('idle')}>
-                Enviar otra solicitud
+                {t('contact.success.again')}
               </button>
             </div>
           ) : (
             <form ref={formRef} className="contact-form" onSubmit={handleSubmit} noValidate>
-              {status === 'error' && serverError && (
+              {status === 'error' && serverErrorKey && (
                 <p className="contact-form__alert" role="alert">
                   <AlertCircle aria-hidden="true" />
-                  {serverError}
+                  {t(`contact.errors.${serverErrorKey}`)}
                 </p>
               )}
 
               <div className="contact-form__row">
                 <div className="field">
-                  <label htmlFor="name">Nombre</label>
-                  <input id="name" type="text" autoComplete="name" placeholder="Tu nombre" {...fieldProps('name')} />
-                  {errors.name && (
-                    <span className="field__error" id="name-error">
-                      {errors.name}
-                    </span>
-                  )}
+                  <label htmlFor="name">{t('contact.fields.name.label')}</label>
+                  <input
+                    id="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder={t('contact.fields.name.placeholder')}
+                    {...fieldProps('name')}
+                  />
+                  {fieldError('name')}
                 </div>
 
                 <div className="field">
-                  <label htmlFor="email">Correo electrónico</label>
+                  <label htmlFor="email">{t('contact.fields.email.label')}</label>
                   <input
                     id="email"
                     type="email"
                     autoComplete="email"
-                    placeholder="nombre@empresa.com"
+                    placeholder={t('contact.fields.email.placeholder')}
                     {...fieldProps('email')}
                   />
-                  {errors.email && (
-                    <span className="field__error" id="email-error">
-                      {errors.email}
-                    </span>
-                  )}
+                  {fieldError('email')}
                 </div>
               </div>
 
               <div className="contact-form__row">
                 <div className="field">
-                  <label htmlFor="phone">Teléfono</label>
+                  <label htmlFor="phone">{t('contact.fields.phone.label')}</label>
                   <input
                     id="phone"
                     type="tel"
                     autoComplete="tel"
-                    placeholder="+57 300 000 0000"
+                    placeholder={t('contact.fields.phone.placeholder')}
                     {...fieldProps('phone')}
                   />
-                  {errors.phone && (
-                    <span className="field__error" id="phone-error">
-                      {errors.phone}
-                    </span>
-                  )}
+                  {fieldError('phone')}
                 </div>
 
                 <div className="field">
-                  <label htmlFor="service">Servicio de interés</label>
+                  <label htmlFor="service">{t('contact.fields.service.label')}</label>
                   <select id="service" {...fieldProps('service')}>
-                    <option value="">Elige una opción</option>
+                    <option value="">{t('contact.fields.service.placeholder')}</option>
+                    {/* value viaja siempre en español: el backend valida contra esa lista */}
                     {CONTACT_SERVICES.map((service) => (
-                      <option key={service} value={service}>
-                        {service}
+                      <option key={service.key} value={service.value}>
+                        {t(`contact.serviceOptions.${service.key}`)}
                       </option>
                     ))}
                   </select>
-                  {errors.service && (
-                    <span className="field__error" id="service-error">
-                      {errors.service}
-                    </span>
-                  )}
+                  {fieldError('service')}
                 </div>
               </div>
 
               <div className="field">
                 <label htmlFor="message">
-                  Mensaje <span className="field__optional">(opcional)</span>
+                  {t('contact.fields.message.label')}{' '}
+                  <span className="field__optional">{t('contact.fields.message.optional')}</span>
                 </label>
                 <textarea
                   id="message"
                   rows="4"
-                  placeholder="Cuéntanos brevemente qué tienes en mente."
+                  placeholder={t('contact.fields.message.placeholder')}
                   {...fieldProps('message')}
                 />
-                {errors.message && (
-                  <span className="field__error" id="message-error">
-                    {errors.message}
-                  </span>
-                )}
+                {fieldError('message')}
               </div>
 
               {/* Campo trampa para bots: invisible y fuera del recorrido con tabulador */}
@@ -230,13 +228,11 @@ export default function ContactForm() {
               </div>
 
               <button type="submit" className="btn btn--primary btn--lg btn--block" disabled={status === 'sending'}>
-                {status === 'sending' ? 'Enviando…' : 'Enviar solicitud'}
+                {status === 'sending' ? t('contact.submitting') : t('contact.submit')}
                 {status !== 'sending' && <ArrowUpRight aria-hidden="true" />}
               </button>
 
-              <p className="contact-form__legal">
-                Al enviar aceptas que te contactemos por correo o teléfono para responder tu solicitud.
-              </p>
+              <p className="contact-form__legal">{t('contact.legal')}</p>
             </form>
           )}
         </Reveal>

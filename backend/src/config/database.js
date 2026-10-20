@@ -26,8 +26,17 @@ const CREATE_TABLE = `
     service     TEXT        NOT NULL,
     message     TEXT,
     source      TEXT        NOT NULL DEFAULT 'home',
+    -- Idioma desde el que se envió el formulario ('es' | 'en'): indica en qué
+    -- idioma hay que responderle al cliente.
+    language    TEXT        NOT NULL DEFAULT 'es',
     created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
   );
+`
+
+// Las bases creadas antes de añadir el idioma necesitan la columna nueva.
+const ADD_LANGUAGE_COLUMN = `
+  ALTER TABLE contact_requests
+    ADD COLUMN IF NOT EXISTS language TEXT NOT NULL DEFAULT 'es';
 `
 
 /** Crea la tabla si no existe. Se ejecuta una vez al arrancar el servidor. */
@@ -37,5 +46,6 @@ export async function initDatabase() {
     return
   }
   await pool.query(CREATE_TABLE)
+  await pool.query(ADD_LANGUAGE_COLUMN)
   console.log('[db] PostgreSQL listo (tabla contact_requests)')
 }

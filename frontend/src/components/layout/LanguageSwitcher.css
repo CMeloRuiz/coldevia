@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Selector de idioma (header) — mismo lenguaje visual que el de moneda
+   ========================================================================== */
+.lang {
+  position: relative;
+  flex: none;
+}
+
+.lang__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(175, 192, 242, 0.16);
+  background: rgba(175, 192, 242, 0.08);
+  color: var(--white-soft);
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.lang__trigger:hover {
+  background: rgba(175, 192, 242, 0.16);
+  border-color: rgba(175, 192, 242, 0.28);
+}
+
+.lang__icon {
+  width: 16px;
+  height: 16px;
+  color: var(--blue-200);
+}
+
+.lang__chevron {
+  width: 15px;
+  height: 15px;
+  color: var(--blue-200);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.lang.is-open .lang__chevron {
+  transform: rotate(180deg);
+}
+
+/* ---------- Desplegable ---------- */
+.lang__list {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 10;
+  min-width: 168px;
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  background: rgba(11, 20, 40, 0.96);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  transition:
+    opacity 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out),
+    visibility 0s linear 0.22s;
+}
+
+.lang.is-open .lang__list {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out),
+    visibility 0s;
+}
+
+.lang__option {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 12px;
+  color: var(--white-soft);
+  text-align: left;
+  transition: background-color 0.18s;
+}
+
+.lang__option:hover {
+  background: rgba(175, 192, 242, 0.12);
+}
+
+.lang__list [aria-selected='true'] .lang__option {
+  background: rgba(42, 87, 164, 0.5);
+}
+
+.lang__option strong {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.lang__option span {
+  font-size: 0.82rem;
+  color: var(--on-dark-muted);
+}
+
+/* ---------- Variantes ---------- */
+@media (max-width: 960px) {
+  .lang--bar {
+    display: none;
+  }
+}
+
+.lang--menu {
+  display: none;
+  margin: 4px 0 10px;
+}
+
+.lang--menu .lang__trigger {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 10px 14px;
+  font-size: 1rem;
+}
+
+.lang--menu .lang__chevron {
+  margin-left: auto;
+}
+
+.lang--menu .lang__list {
+  right: auto;
+  left: 0;
+  width: 100%;
+  transform-origin: top left;
+}
+
+@media (max-width: 960px) {
+  .lang--menu {
+    display: block;
+  }
+}

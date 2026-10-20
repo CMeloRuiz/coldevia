@@ -1,11 +1,13 @@
 import { useCountUp } from '../../hooks/useCountUp'
 import { useRevealOnScroll } from '../../hooks/useRevealOnScroll'
+import { useT } from '../../i18n/language-context'
 import './Stats.css'
 
+// Solo los números viven aquí; las etiquetas están en stats.items.<id>
 const STATS = [
-  { value: 20, label: 'Proyectos', detail: 'entregados y funcionando en producción' },
-  { value: 30, label: 'Clientes', detail: 'en Colombia, Argentina y Estados Unidos' },
-  { value: 10, label: 'Años de experiencia', detail: 'construyendo software para empresas' },
+  { id: 'projects', value: 20 },
+  { id: 'clients', value: 30 },
+  { id: 'years', value: 10 },
 ]
 
 function StatItem({ value, label, detail, start, index }) {
@@ -27,18 +29,26 @@ function StatItem({ value, label, detail, start, index }) {
 
 export default function Stats() {
   const [ref, isVisible] = useRevealOnScroll({ threshold: 0.35 })
+  const t = useT()
 
   return (
-    <section className="stats" aria-label="Logros de ColdevIA">
+    <section className="stats" aria-label={t('stats.sectionAria')}>
       <div className="container">
         <div ref={ref} className={`stats__card ${isVisible ? 'is-visible' : ''}`} data-reveal="scale">
           <div className="stats__intro" data-reveal="up">
-            <span className="eyebrow">Trayectoria</span>
-            <p>Resultados que respaldan cada proyecto que aceptamos.</p>
+            <span className="eyebrow">{t('stats.eyebrow')}</span>
+            <p>{t('stats.intro')}</p>
           </div>
           <ul className="stats__list">
             {STATS.map((stat, index) => (
-              <StatItem key={stat.label} {...stat} index={index} start={isVisible} />
+              <StatItem
+                key={stat.id}
+                value={stat.value}
+                label={t(`stats.items.${stat.id}.label`)}
+                detail={t(`stats.items.${stat.id}.detail`)}
+                index={index}
+                start={isVisible}
+              />
             ))}
           </ul>
         </div>

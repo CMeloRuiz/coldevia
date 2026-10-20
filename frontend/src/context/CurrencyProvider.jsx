@@ -4,8 +4,6 @@ import { CURRENCY_STORAGE_KEY, CurrencyContext } from './currency-context'
 
 const isValid = (code) => CURRENCIES.some((currency) => currency.code === code)
 
-// Lee la preferencia guardada antes del primer render (evita el parpadeo de
-// mostrar COP y cambiar a la moneda elegida un instante después).
 const readStoredCurrency = () => {
   try {
     const stored = window.localStorage.getItem(CURRENCY_STORAGE_KEY)
@@ -13,16 +11,28 @@ const readStoredCurrency = () => {
   } catch {
     // localStorage puede fallar en modo privado o con las cookies bloqueadas
   }
-  return DEFAULT_CURRENCY
+  return null
 }
 
 /** Mantiene la moneda elegida y la persiste en localStorage. */
 export default function CurrencyProvider({ children }) {
-  const [currency, setCurrencyState] = useState(readStoredCurrency)
+  // Lee la preferencia guardada antes del primer render (evita el parpadeo de
+  // mostrar COP y cambiar a la moneda elegida un instante después).
+  const [currency, setCurrencyState] = useState(() => readStoredCurrency() ?? DEFAULT_CURRENCY)
+  // true si la moneda actual la eligió la persona (guardada o en esta visita).
+  // El cambio de idioma solo sugiere moneda cuando esto es false.
+  const [chosenByUser, setChosenByUser] = useState(() => readStoredCurrency() !== null)
 
   const setCurrency = useCallback((code) => {
     if (!isValid(code)) return
     setCurrencyState(code)
+    setChosenByUser(true)
+  }, [])
+
+  /** Cambia la moneda sin marcarla como elección propia (ver LanguageProvider). */
+  const suggestCurrency = useCallback((code) => {
+    if (!isValid(code)) return
+    setCurrencyState((current) => (current === code ? current : code))
   }, [])
 
   useEffect(() => {
@@ -33,7 +43,10 @@ export default function CurrencyProvider({ children }) {
     }
   }, [currency])
 
-  const value = useMemo(() => ({ currency, setCurrency }), [currency, setCurrency])
+  const value = useMemo(
+    () => ({ currency, setCurrency, suggestCurrency, chosenByUser }),
+    [currency, setCurrency, suggestCurrency, chosenByUser],
+  )
 
   return <CurrencyContext.Provider value={value}>{children}</CurrencyContext.Provider>
 }

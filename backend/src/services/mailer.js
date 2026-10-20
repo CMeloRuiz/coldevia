@@ -17,11 +17,16 @@ export async function sendContactNotification(data) {
     return { sent: false, reason: 'not-configured' }
   }
 
+  // El aviso va siempre en español, pero indica en qué idioma escribe el cliente
+  const idiomas = { es: 'Español', en: 'Inglés' }
+  const idioma = idiomas[data.language] ?? idiomas.es
+
   const rows = [
     ['Nombre', data.name],
     ['Correo', data.email],
     ['Teléfono', data.phone],
     ['Servicio de interés', data.service],
+    ['Idioma del cliente', idioma],
     ['Mensaje', data.message || '—'],
   ]
     .map(
@@ -41,11 +46,13 @@ export async function sendContactNotification(data) {
       from: env.mailFrom,
       to: env.mailTo,
       reply_to: data.email,
-      subject: `Nueva solicitud de ${data.name} · ${data.service}`,
+      subject: `Nueva solicitud de ${data.name} · ${data.service} (${idioma})`,
       html: `
         <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px">
           <h2 style="color:#0E1526;font-size:19px;margin:0 0 4px">Nueva solicitud desde el sitio</h2>
-          <p style="color:#5F6676;font-size:14px;margin:0 0 18px">Formulario de contacto del Home</p>
+          <p style="color:#5F6676;font-size:14px;margin:0 0 18px">
+            Formulario de contacto del Home · Respóndele en <strong>${idioma}</strong>
+          </p>
           <table style="border-collapse:collapse">${rows}</table>
         </div>`,
     }),
