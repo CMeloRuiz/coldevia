@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import HeroSphere from './HeroSphere'
+import { CONTACT_HREF, CONTACT_TARGET, useContactNavigation } from '../../hooks/useContactNavigation'
 import { useT } from '../../i18n/language-context'
 import './Hero.css'
 
@@ -27,6 +28,15 @@ const Line = ({ delay, children }) => (
 
 export default function Hero() {
   const t = useT()
+  // Mismo destino que el botón "Contacto" del header: se define una sola vez
+  // en useContactNavigation.js (hoy, el formulario del final del Home).
+  const goToContact = useContactNavigation()
+
+  const handleContactClick = (event) => {
+    if (CONTACT_TARGET.type !== 'section') return
+    event.preventDefault()
+    goToContact()
+  }
 
   return (
     <section className="hero" aria-labelledby="hero-title">
@@ -47,15 +57,16 @@ export default function Hero() {
           </p>
 
           <div className="hero__ctas">
-            <Link
-              to="/contacto"
+            <a
+              href={CONTACT_HREF}
               className="btn btn--primary hero__cta"
+              onClick={handleContactClick}
               data-intro="settle"
               style={{ '--intro-delay': '0.9s' }}
             >
               {t('hero.ctaPrimary')}
               <Arrow />
-            </Link>
+            </a>
             <Link
               to="/servicios"
               className="hero__link"

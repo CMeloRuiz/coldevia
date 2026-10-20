@@ -281,6 +281,7 @@ export const es = {
     },
     submit: 'Enviar solicitud',
     submitting: 'Enviando…',
+    waking: 'El servidor puede tardar hasta un minuto en despertar. No cierres esta página.',
     legal: 'Al enviar aceptas que te contactemos por correo o teléfono para responder tu solicitud.',
     success: {
       title: 'Solicitud enviada',
@@ -294,7 +295,10 @@ export const es = {
       service: 'Elige el servicio que te interesa.',
       message: 'El mensaje es demasiado largo.',
       network: 'No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.',
-      generic: 'No se pudo enviar la solicitud.',
+      timeout: 'El servidor tardó demasiado en responder. Vuelve a intentarlo en un momento.',
+      rate: 'Enviaste varias solicitudes seguidas. Espera un momento antes de volver a intentarlo.',
+      mail: 'Guardamos tu solicitud, pero no pudimos avisar a nuestro equipo. Si no tienes respuesta pronto, escríbenos a info@coldevia.com.',
+      generic: 'No se pudo enviar la solicitud. Vuelve a intentarlo o escríbenos a info@coldevia.com.',
     },
   },
 

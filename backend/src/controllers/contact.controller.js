@@ -1,7 +1,7 @@
 import { saveContactRequest } from '../services/contactRepository.js'
-import { sendContactNotification } from '../services/mailer.js'
+import { sendContactNotification, MailError } from '../services/mailer.js'
 
-// Debe coincidir con las opciones del select del formulario (frontend/src/data/services.js)
+// Debe coincidir con las opciones del select del formulario (frontend/src/data/contact-services.js)
 const SERVICES = [
   'Creación de sitios web',
   'E-commerce',
@@ -17,7 +17,21 @@ const LANGUAGES = ['es', 'en']
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
 const PHONE_RE = /^[+\d][\d\s()-]{6,19}$/
 
-const clean = (value) => (typeof value === 'string' ? value.trim() : '')
+/**
+ * Deja el texto en condiciones de guardarse y de incrustarse en el correo:
+ * quita etiquetas HTML y caracteres de control, y recorta los espacios.
+ * El escapado final lo hace el mailer; esto evita además que el dato quede
+ * sucio en la base.
+ */
+const clean = (value) =>
+  typeof value === 'string'
+    ? value
+        .replace(/<[^>]*>/g, ' ')
+        // eslint-disable-next-line no-control-regex
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+        .replace(/[ \t]+/g, ' ')
+        .trim()
+    : ''
 
 function validate(body) {
   const data = {
@@ -38,7 +52,7 @@ function validate(body) {
   return { data, errors }
 }
 
-/** POST /api/contacto — guarda la solicitud y avisa por correo. */
+/** POST /api/contact — guarda la solicitud y avisa por correo. */
 export async function createContactRequest(req, res, next) {
   try {
     // Campo trampa: los bots lo completan, las personas no lo ven.
@@ -46,27 +60,35 @@ export async function createContactRequest(req, res, next) {
 
     const { data, errors } = validate(req.body ?? {})
     if (Object.keys(errors).length > 0) {
-      return res.status(422).json({ error: 'Revisa los datos del formulario.', errors })
+      return res.status(422).json({ error: 'Revisa los datos del formulario.', code: 'validation', errors })
     }
 
     // Idioma desde el que se envió el formulario: define en qué idioma responder
     const language = LANGUAGES.includes(clean(req.body.language)) ? clean(req.body.language) : 'es'
-    const saved = await saveContactRequest({
-      ...data,
-      source: clean(req.body.source) || 'home',
-      language,
-    })
+    const request = { ...data, source: clean(req.body.source) || 'home', language }
 
-    // El correo no debe tumbar la solicitud: si falla, ya quedó guardada.
-    let notified = false
+    // Primero se guarda: pase lo que pase con el correo, la solicitud existe.
+    const saved = await saveContactRequest(request)
+
     try {
-      const result = await sendContactNotification({ ...data, language })
-      notified = result.sent
+      await sendContactNotification(request)
     } catch (error) {
-      console.error('[mail] No se pudo enviar la notificación:', error.message)
+      // Ninguna solicitud se pierde: queda guardada y además escrita en el log,
+      // con todos los datos, para poder responderla a mano.
+      console.error(
+        `[contact] SOLICITUD SIN NOTIFICAR (${error.message}) · guardada en ${saved.storage}${saved.id ? ` #${saved.id}` : ''} ·`,
+        JSON.stringify(request),
+      )
+
+      const notConfigured = error instanceof MailError && error.configured === false
+      return res.status(notConfigured ? 503 : 502).json({
+        error: 'Guardamos tu solicitud, pero no pudimos enviar el aviso por correo.',
+        code: 'mail',
+        saved: true,
+      })
     }
 
-    return res.status(201).json({ ok: true, id: saved.id, storage: saved.storage, notified })
+    return res.status(201).json({ ok: true, id: saved.id, storage: saved.storage, notified: true })
   } catch (error) {
     return next(error)
   }

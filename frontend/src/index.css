@@ -84,6 +84,11 @@
   --blue-200: #afc0f2;
   --blue-100: #e3eafb;
 
+  /* Error y validación sobre fondos claros */
+  --danger-700: #8c1d18; /* texto de error        (8.3:1 sobre #fdf5f4) */
+  --danger-600: #b3261e; /* bordes y contornos    (6.5:1 sobre blanco) */
+  --danger-50: #fdf5f4; /* fondo de los avisos */
+
   /* Degradados de marca */
   --grad-navy: linear-gradient(160deg, var(--navy-950) 0%, var(--navy-900) 45%, var(--navy-800) 100%);
   --grad-navy-soft: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
@@ -258,6 +263,26 @@ ol {
 .section--dark h2,
 .section--dark h3 {
   color: var(--white-soft);
+}
+
+/* ---------- Superficies claras dentro de secciones oscuras ----------
+   Una tarjeta blanca dentro de .section--dark heredaba el color de texto
+   claro de la sección y quedaba casi invisible. Cualquier bloque claro sobre
+   fondo oscuro (y al revés) lleva esta clase y recupera los colores de marca
+   para fondo claro: --ink en titulares (17.9:1) y --ink-soft en el cuerpo
+   (8.6:1), muy por encima del 4.5:1 que pide WCAG AA. */
+.section--dark .surface--light {
+  color: var(--ink-soft);
+}
+
+.section--dark .surface--light h2,
+.section--dark .surface--light h3,
+.section--dark .surface--light h4 {
+  color: var(--ink);
+}
+
+.section--dark .surface--light .eyebrow {
+  color: var(--blue-600);
 }
 
 /* ---------- Encabezados de sección ---------- */

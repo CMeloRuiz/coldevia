@@ -276,6 +276,7 @@ export const en = {
     },
     submit: 'Send request',
     submitting: 'Sending…',
+    waking: 'The server can take up to a minute to wake up. Please keep this page open.',
     legal: 'By submitting, you agree that we may contact you by email or phone to answer your request.',
     success: {
       title: 'Request sent',
@@ -289,7 +290,10 @@ export const en = {
       service: 'Choose the service you are interested in.',
       message: 'This message is too long.',
       network: 'We could not reach the server. Check your connection and try again.',
-      generic: 'The request could not be sent.',
+      timeout: 'The server took too long to respond. Please try again in a moment.',
+      rate: 'You have sent several requests in a row. Please wait a moment before trying again.',
+      mail: 'We saved your request, but could not notify our team. If you do not hear back soon, email us at info@coldevia.com.',
+      generic: 'The request could not be sent. Try again or email us at info@coldevia.com.',
     },
   },
 

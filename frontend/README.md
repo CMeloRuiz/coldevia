@@ -27,6 +27,22 @@ src/
 public/                  favicons, og-image.png, robots.txt, sitemap.xml, site.webmanifest
 ```
 
+## Variables de entorno
+
+Ver `.env.example`. Solo las que empiezan por `VITE_` llegan al navegador.
+
+- `VITE_API_URL`: URL pública de la API, **sin barra final**.
+  - **Desarrollo:** se deja vacía. Vite redirige `/api` a `http://localhost:4000`
+    (ver `server.proxy` en `vite.config.js`).
+  - **Producción:** la URL del servicio de la API en Render, por ejemplo
+    `https://coldevia-api.onrender.com`. Se configura en el panel del sitio
+    estático, no en el repositorio.
+
+El formulario del Home envía a `POST {VITE_API_URL}/api/contact` con el idioma
+activo. Si el servidor tarda (el plan gratuito de Render duerme el servicio),
+el botón queda en "Enviando…" y a los 6 segundos aparece un aviso de que puede
+demorar; a los 90 segundos la petición se corta con un mensaje de error.
+
 ## Idiomas (español / inglés)
 
 - Por defecto, español. El selector del header guarda la elección en `localStorage`

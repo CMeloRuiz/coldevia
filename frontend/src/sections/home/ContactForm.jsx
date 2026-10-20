@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AlertCircle, ArrowUpRight, Check, Clock, FileText, ShieldCheck } from 'lucide-react'
 import Reveal from '../../components/ui/Reveal'
 import SectionHeading from '../../components/ui/SectionHeading'
@@ -6,9 +6,16 @@ import { CONTACT_SERVICES, CONTACT_SERVICE_VALUES } from '../../data/contact-ser
 import { useLanguage } from '../../i18n/language-context'
 import './ContactForm.css'
 
-// En desarrollo, Vite redirige /api al backend (ver vite.config.js).
-// En producción se define VITE_API_URL con la URL pública de la API.
-const API_URL = import.meta.env.VITE_API_URL ?? ''
+// En desarrollo, Vite redirige /api al backend (ver vite.config.js), así que
+// VITE_API_URL queda vacía. En producción se define con la URL pública de la
+// API en Render (ver frontend/.env.example).
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')
+
+// El plan gratuito de Render duerme el servicio tras un rato sin uso y el
+// primer arranque puede tardar cerca de un minuto: el tiempo de espera es
+// amplio y a los 6 segundos se avisa que puede demorar.
+const REQUEST_TIMEOUT_MS = 90_000
+const WAKING_NOTICE_MS = 6_000
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
 const PHONE_RE = /^[+\d][\d\s()-]{6,19}$/
@@ -35,8 +42,16 @@ export default function ContactForm() {
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [serverErrorKey, setServerErrorKey] = useState('')
+  const [isWaking, setIsWaking] = useState(false)
   const formRef = useRef(null)
   const points = t('contact.points')
+
+  // Aviso de "esto puede tardar" mientras despierta el servidor gratuito
+  useEffect(() => {
+    if (status !== 'sending') return undefined
+    const timer = window.setTimeout(() => setIsWaking(true), WAKING_NOTICE_MS)
+    return () => window.clearTimeout(timer)
+  }, [status])
 
   const update = (field) => (event) => {
     const { value } = event.target
@@ -63,13 +78,19 @@ export default function ContactForm() {
 
     setStatus('sending')
     setServerErrorKey('')
+    setIsWaking(false)
+
+    // Corta la espera si el servidor nunca responde, sin dejar el botón colgado
+    const controller = new AbortController()
+    const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
     try {
-      const response = await fetch(`${API_URL}/api/contacto`, {
+      const response = await fetch(`${API_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // `language` le dice al backend en qué idioma responderle al cliente
         body: JSON.stringify({ ...values, source: 'home', language }),
+        signal: controller.signal,
       })
       const payload = await response.json().catch(() => ({}))
 
@@ -81,14 +102,25 @@ export default function ContactForm() {
         setStatus('idle')
         return
       }
+      if (response.status === 429) throw new Error('rate')
+      // El backend guardó la solicitud pero no pudo avisar por correo
+      if (payload.code === 'mail') throw new Error('mail')
       if (!response.ok) throw new Error('generic')
 
       setValues(EMPTY)
       setErrors({})
       setStatus('sent')
     } catch (error) {
-      setServerErrorKey(error.message === 'Failed to fetch' ? 'network' : 'generic')
+      const KNOWN = ['rate', 'mail']
+      let key = 'generic'
+      if (error.name === 'AbortError') key = 'timeout'
+      else if (error.message === 'Failed to fetch') key = 'network'
+      else if (KNOWN.includes(error.message)) key = error.message
+
+      setServerErrorKey(key)
       setStatus('error')
+    } finally {
+      window.clearTimeout(timeout)
     }
   }
 
@@ -132,7 +164,9 @@ export default function ContactForm() {
           </ul>
         </Reveal>
 
-        <Reveal className="contact__card" variant="right">
+        {/* surface--light: tarjeta clara dentro de una sección oscura. Sin esa
+            clase, el texto heredaría el color claro de .section--dark. */}
+        <Reveal className="contact__card surface--light" variant="right">
           {status === 'sent' ? (
             <div className="contact__success" role="status">
               <span className="contact__success-icon">
@@ -231,6 +265,12 @@ export default function ContactForm() {
                 {status === 'sending' ? t('contact.submitting') : t('contact.submit')}
                 {status !== 'sending' && <ArrowUpRight aria-hidden="true" />}
               </button>
+
+              {/* El servidor gratuito puede tardar en despertar: se avisa para
+                  que el botón "Enviando…" no parezca colgado. */}
+              <p className="contact-form__waking" role="status">
+                {status === 'sending' && isWaking ? t('contact.waking') : ''}
+              </p>
 
               <p className="contact-form__legal">{t('contact.legal')}</p>
             </form>

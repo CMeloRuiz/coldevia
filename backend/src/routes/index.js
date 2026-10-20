@@ -6,6 +6,9 @@ import contactRoutes from './contact.routes.js'
 const router = Router()
 
 router.use('/health', healthRoutes)
+router.use('/contact', contactRoutes)
+// Nombre anterior del endpoint. Se mantiene para que una versión del sitio
+// todavía en caché del navegador no se quede sin enviar.
 router.use('/contacto', contactRoutes)
 
 export default router

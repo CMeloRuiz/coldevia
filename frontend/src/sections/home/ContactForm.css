@@ -130,18 +130,19 @@
 
 /* Estado de error */
 .field .is-invalid {
-  border-color: #b3261e;
-  background: #fdf5f4;
+  border-color: var(--danger-600);
+  background: var(--danger-50);
 }
 
 .field .is-invalid:focus {
-  border-color: #b3261e;
+  border-color: var(--danger-600);
   box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.16);
 }
 
 .field__error {
   font-size: 0.83rem;
-  color: #b3261e;
+  /* Rojo oscuro: el mismo nivel de legibilidad que el resto del formulario */
+  color: var(--danger-700);
 }
 
 /* ---------- Mensajes y extras ---------- */
@@ -152,9 +153,9 @@
   padding: 12px 14px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(179, 38, 30, 0.25);
-  background: #fdf5f4;
+  background: var(--danger-50);
   font-size: 0.9rem;
-  color: #8c1d18;
+  color: var(--danger-700);
 }
 
 .contact-form__alert svg {
@@ -171,6 +172,16 @@
 .contact-form button[type='submit']:disabled {
   opacity: 0.7;
   cursor: progress;
+}
+
+/* Aviso de "puede tardar" mientras despierta el servidor */
+.contact-form__waking {
+  margin-top: -8px;
+  min-height: 1.4em;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink-muted);
+  text-align: center;
 }
 
 .contact-form__legal {
@@ -215,14 +226,18 @@
   stroke-width: 2.5;
 }
 
+/* El color lo fija .surface--light (ver index.css); aquí se repite de forma
+   explícita para que la confirmación no dependa de dónde esté la tarjeta. */
 .contact__success h3 {
   margin-top: 22px;
   font-size: 1.5rem;
+  color: var(--ink);
 }
 
 .contact__success p {
   margin: 12px 0 26px;
   max-width: 44ch;
+  color: var(--ink-soft);
 }
 
 @media (max-width: 960px) {

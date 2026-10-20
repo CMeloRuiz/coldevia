@@ -4,23 +4,11 @@ import { ArrowUpRight, Menu, X } from 'lucide-react'
 import logo from '../../assets/images/logo_header.png'
 import { NAV_LINKS } from '../../data/site'
 import { useSectionNavigation } from '../../hooks/useSectionNavigation'
+import { CONTACT_HREF, CONTACT_TARGET, useContactNavigation } from '../../hooks/useContactNavigation'
 import { useLanguage } from '../../i18n/language-context'
 import CurrencySwitcher from './CurrencySwitcher'
 import LanguageSwitcher from './LanguageSwitcher'
 import './Header.css'
-
-/**
- * Destino del botón "Contacto".
- *
- * Mientras no exista la página /contacto, el botón lleva al formulario del
- * final del Home (sección con id="contacto"). El desplazamiento respeta el
- * header fijo gracias a `scroll-margin-top` en `.section` (ver index.css).
- *
- * PARA CAMBIARLO A LA PÁGINA DEDICADA: reemplaza esta constante por
- *   const CONTACT_TARGET = { type: 'route', to: '/contacto' }
- * El resto del componente ya contempla las dos variantes.
- */
-const CONTACT_TARGET = { type: 'section', id: 'contacto' }
 
 /**
  * Header dinámico.
@@ -38,6 +26,8 @@ export default function Header() {
   const [menuPath, setMenuPath] = useState(null)
   const { pathname } = useLocation()
   const goToSection = useSectionNavigation()
+  // Mismo destino y mismo comportamiento que el botón principal del hero
+  const goToContact = useContactNavigation()
   const { t } = useLanguage()
 
   useEffect(() => {
@@ -84,15 +74,16 @@ export default function Header() {
       </NavLink>
     )
 
+  const handleContactClick = (event) => {
+    event.preventDefault()
+    closeMenu()
+    goToContact()
+  }
+
   /** Botón de contacto: sección del Home o ruta propia, según CONTACT_TARGET. */
   const renderContactButton = (className, extra = {}) =>
     CONTACT_TARGET.type === 'section' ? (
-      <a
-        href={`/#${CONTACT_TARGET.id}`}
-        className={className}
-        onClick={(event) => handleSectionClick(event, CONTACT_TARGET.id)}
-        {...extra}
-      >
+      <a href={CONTACT_HREF} className={className} onClick={handleContactClick} {...extra}>
         {t('header.contact')}
         <ArrowUpRight aria-hidden="true" />
       </a>
