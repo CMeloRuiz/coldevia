@@ -100,9 +100,9 @@ que se puede enviar desde un buzón propio y a cualquier destinatario.
 1. En https://resend.com/api-keys → Create API Key, permiso **Sending access**.
 2. Copiar la clave (empieza por `re_`) en `RESEND_API_KEY`. Solo se muestra una
    vez.
-3. `CONTACT_TO_EMAIL=ventas@coldevia.com`. Ese buzón reenvía al Gmail personal
+3. `CONTACT_TO_EMAIL=contacto@coldevia.com`. Ese buzón reenvía al Gmail personal
    por Cloudflare Email Routing; cambiar de destinatario no toca el código.
-4. El remitente por defecto es `ColdevIA <ventas@coldevia.com>`. Solo hay que
+4. El remitente por defecto es `ColdevIA <contacto@coldevia.com>`. Solo hay que
    definir `CONTACT_FROM_EMAIL` si se quiere otro.
 
 ## Almacenamiento

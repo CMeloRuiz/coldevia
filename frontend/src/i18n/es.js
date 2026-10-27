@@ -297,8 +297,8 @@ export const es = {
       network: 'No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.',
       timeout: 'El servidor tardó demasiado en responder. Vuelve a intentarlo en un momento.',
       rate: 'Enviaste varias solicitudes seguidas. Espera un momento antes de volver a intentarlo.',
-      mail: 'Guardamos tu solicitud, pero no pudimos avisar a nuestro equipo. Si no tienes respuesta pronto, escríbenos a info@coldevia.com.',
-      generic: 'No se pudo enviar la solicitud. Vuelve a intentarlo o escríbenos a info@coldevia.com.',
+      mail: 'Guardamos tu solicitud, pero no pudimos avisar a nuestro equipo. Si no tienes respuesta pronto, escríbenos a contacto@coldevia.com.',
+      generic: 'No se pudo enviar la solicitud. Vuelve a intentarlo o escríbenos a contacto@coldevia.com.',
     },
   },
 

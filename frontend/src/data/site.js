@@ -21,7 +21,7 @@ export const NAV_LINKS = [
 ]
 
 export const CONTACT = {
-  email: 'info@coldevia.com',
+  email: 'contacto@coldevia.com',
   phone: '+57 320 829 1613',
   phoneHref: 'tel:+573208291613',
   whatsappHref: 'https://wa.me/573208291613',

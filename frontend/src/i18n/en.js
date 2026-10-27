@@ -292,8 +292,8 @@ export const en = {
       network: 'We could not reach the server. Check your connection and try again.',
       timeout: 'The server took too long to respond. Please try again in a moment.',
       rate: 'You have sent several requests in a row. Please wait a moment before trying again.',
-      mail: 'We saved your request, but could not notify our team. If you do not hear back soon, email us at info@coldevia.com.',
-      generic: 'The request could not be sent. Try again or email us at info@coldevia.com.',
+      mail: 'We saved your request, but could not notify our team. If you do not hear back soon, email us at contacto@coldevia.com.',
+      generic: 'The request could not be sent. Try again or email us at contacto@coldevia.com.',
     },
   },
 
