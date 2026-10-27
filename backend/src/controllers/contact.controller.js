@@ -71,7 +71,9 @@ export async function createContactRequest(req, res, next) {
     const saved = await saveContactRequest(request)
 
     try {
-      await sendContactNotification(request)
+      const { id } = await sendContactNotification(request)
+      // El id de Resend permite rastrear el envío en su panel desde los logs
+      console.log(`[contact] Solicitud de ${request.email} notificada (Resend ${id ?? 'sin id'})`)
     } catch (error) {
       // Ninguna solicitud se pierde: queda guardada y además escrita en el log,
       // con todos los datos, para poder responderla a mano.
