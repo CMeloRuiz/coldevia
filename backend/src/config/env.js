@@ -46,9 +46,11 @@ export const env = {
   // Resend (correo). Sin API key o sin destinatario no se envía nada y la
   // solicitud se responde con error, para que nadie crea que llegó el aviso.
   resendApiKey: process.env.RESEND_API_KEY ?? '',
+  // Remitente: buzón del dominio propio, ya verificado en Resend (SPF, DKIM y
+  // DMARC). Se puede sobrescribir, pero el valor por defecto es el bueno.
   // CONTACT_FROM_EMAIL / CONTACT_TO_EMAIL son los nombres actuales;
   // CONTACT_MAIL_FROM / CONTACT_MAIL_TO siguen funcionando por compatibilidad.
-  mailFrom: process.env.CONTACT_FROM_EMAIL ?? process.env.CONTACT_MAIL_FROM ?? 'ColdevIA <onboarding@resend.dev>',
+  mailFrom: process.env.CONTACT_FROM_EMAIL ?? process.env.CONTACT_MAIL_FROM ?? 'ColdevIA <ventas@coldevia.com>',
   mailTo: parseList(process.env.CONTACT_TO_EMAIL ?? process.env.CONTACT_MAIL_TO),
 
   // Límite de envíos del formulario por IP.

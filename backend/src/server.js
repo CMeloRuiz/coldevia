@@ -7,8 +7,10 @@ await initDatabase().catch((error) => {
   console.error('[db] No se pudo inicializar la base de datos:', error.message)
 })
 
-const server = app.listen(env.port, () => {
-  console.log(`API de ColdevIA escuchando en http://localhost:${env.port} (${env.nodeEnv})`)
+// 0.0.0.0 explícito: Render solo detecta el servicio si escucha en todas las
+// interfaces, y el puerto lo impone la plataforma con PORT.
+const server = app.listen(env.port, '0.0.0.0', () => {
+  console.log(`API de ColdevIA escuchando en http://0.0.0.0:${env.port} (${env.nodeEnv})`)
 })
 
 // Cierre ordenado (Render y otros hosts envían SIGTERM al redeployar).

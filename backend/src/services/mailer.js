@@ -1,6 +1,5 @@
+import { Resend } from 'resend'
 import { env, hasMailer } from '../config/env.js'
-
-const RESEND_ENDPOINT = 'https://api.resend.com/emails'
 
 /**
  * Error de notificación. El controlador lo distingue de un fallo cualquiera
@@ -13,6 +12,9 @@ export class MailError extends Error {
     this.configured = configured
   }
 }
+
+// El cliente se crea una sola vez; sin API key no se instancia.
+const resend = env.resendApiKey ? new Resend(env.resendApiKey) : null
 
 const escapeHtml = (value = '') =>
   String(value).replace(
@@ -48,6 +50,7 @@ export function buildContactEmail(data, date = new Date()) {
     ['Mensaje', message],
   ]
 
+  // Todo valor que venga del cliente se escapa antes de entrar al HTML.
   const html = `
     <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;color:#0E1526">
       <h2 style="color:#0E1526;font-size:19px;margin:0 0 4px">Nueva solicitud desde el sitio</h2>
@@ -85,7 +88,7 @@ export function buildContactEmail(data, date = new Date()) {
 }
 
 /**
- * Avisa por correo que llegó una solicitud nueva, con la API HTTPS de Resend.
+ * Avisa por correo que llegó una solicitud nueva, con el SDK oficial de Resend.
  *
  * Se usa Resend y no SMTP porque los servicios gratuitos de Render tienen
  * bloqueada la salida a los puertos 25, 465 y 587 (cambio de septiembre de
@@ -97,33 +100,26 @@ export function buildContactEmail(data, date = new Date()) {
  * nadie va a leer.
  */
 export async function sendContactNotification(data) {
-  if (!hasMailer) {
+  if (!hasMailer || !resend) {
     throw new MailError('Falta RESEND_API_KEY o CONTACT_TO_EMAIL', { configured: false })
   }
 
   const { subject, html, text } = buildContactEmail(data)
 
-  const response = await fetch(RESEND_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${env.resendApiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: env.mailFrom,
-      to: env.mailTo,
-      // Para responderle al cliente directamente desde la bandeja de entrada
-      reply_to: data.email,
-      subject,
-      html,
-      text,
-    }),
+  // El SDK no lanza excepción ante un error de la API: lo devuelve en `error`.
+  const { data: sent, error } = await resend.emails.send({
+    from: env.mailFrom,
+    to: env.mailTo,
+    // Para responderle al cliente directamente desde la bandeja de entrada
+    replyTo: data.email,
+    subject,
+    html,
+    text,
   })
 
-  if (!response.ok) {
-    const detail = await response.text()
-    throw new MailError(`Resend respondió ${response.status}: ${detail}`)
+  if (error) {
+    throw new MailError(`Resend rechazó el envío (${error.name ?? 'error'}): ${error.message}`)
   }
 
-  return { sent: true }
+  return { sent: true, id: sent?.id }
 }

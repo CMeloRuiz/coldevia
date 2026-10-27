@@ -34,9 +34,15 @@ Ver `.env.example`. Solo las que empiezan por `VITE_` llegan al navegador.
 - `VITE_API_URL`: URL pública de la API, **sin barra final**.
   - **Desarrollo:** se deja vacía. Vite redirige `/api` a `http://localhost:4000`
     (ver `server.proxy` en `vite.config.js`).
-  - **Producción:** la URL del servicio de la API en Render, por ejemplo
-    `https://coldevia-api.onrender.com`. Se configura en el panel del sitio
-    estático, no en el repositorio.
+  - **Producción:** la URL del servicio de la API en Render
+    (`https://coldevia-api.onrender.com`). Se configura en Environment, dentro
+    del sitio estático `coldevia`, no en el repositorio.
+
+> **Importante:** Vite incrusta las variables `VITE_*` en el código **al
+> compilar**, no las lee en el navegador. Cambiar `VITE_API_URL` en Render no
+> surte efecto hasta hacer **Manual Deploy → Deploy latest commit** del sitio
+> estático. Si el formulario sigue apuntando a la URL vieja, es que falta ese
+> redespliegue.
 
 El formulario del Home envía a `POST {VITE_API_URL}/api/contact` con el idioma
 activo. Si el servidor tarda (el plan gratuito de Render duerme el servicio),

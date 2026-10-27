@@ -53,6 +53,28 @@ correo. Si el envío falla, la solicitud queda guardada, el servidor escribe en
 el log la línea `[contact] SOLICITUD SIN NOTIFICAR` con todos los datos, y la
 respuesta es un error claro para que el visitante no crea que llegó el aviso.
 
+## Despliegue en Render (Web Service `coldevia-api`)
+
+| Campo              | Valor                 |
+| ------------------ | --------------------- |
+| Root Directory     | `backend`             |
+| Build Command      | `npm ci`              |
+| Start Command      | `npm start`           |
+| Health Check Path  | `/api/health`         |
+| Runtime            | Node (`engines.node` fija Node 22) |
+
+El servidor escucha en `0.0.0.0` y en el puerto que impone Render con `PORT`.
+`trust proxy` está activado, así que el límite por IP ve la IP real del
+visitante y no la del proxy de Render.
+
+Variables de entorno del servicio (los valores secretos van en el panel, nunca
+en el repositorio): `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `FRONTEND_URL`.
+`PORT` la define Render sola.
+
+En el sitio estático `coldevia` hay que definir `VITE_API_URL` con la URL de
+este servicio y **volver a desplegarlo**: Vite incrusta esa variable al
+compilar.
+
 ## Correo: por qué Resend y no Gmail con Nodemailer
 
 Los servicios gratuitos de Render **tienen bloqueada la salida a los puertos
@@ -72,22 +94,30 @@ para "Correo", y usar esos 16 caracteres como contraseña SMTP en
 
 ### Configurar Resend
 
-1. Crear una cuenta en https://resend.com con el correo donde quieras recibir
-   los avisos.
-2. API keys → Create API Key (permiso de envío) → copiarla en `RESEND_API_KEY`.
-3. Mientras no se verifique el dominio, `CONTACT_FROM_EMAIL` tiene que ser
-   `ColdevIA <onboarding@resend.dev>`, y Resend **solo** permite enviar al
-   correo de la cuenta. Para escribir a cualquier destinatario hay que verificar
-   `coldevia.com` en Domains y usar un remitente propio (`no-reply@coldevia.com`).
-4. `CONTACT_TO_EMAIL` es el destinatario del aviso. Cambiarlo no toca el código.
+El dominio `coldevia.com` ya está verificado en Resend (SPF, DKIM y DMARC), así
+que se puede enviar desde un buzón propio y a cualquier destinatario.
+
+1. En https://resend.com/api-keys → Create API Key, permiso **Sending access**.
+2. Copiar la clave (empieza por `re_`) en `RESEND_API_KEY`. Solo se muestra una
+   vez.
+3. `CONTACT_TO_EMAIL=ventas@coldevia.com`. Ese buzón reenvía al Gmail personal
+   por Cloudflare Email Routing; cambiar de destinatario no toca el código.
+4. El remitente por defecto es `ColdevIA <ventas@coldevia.com>`. Solo hay que
+   definir `CONTACT_FROM_EMAIL` si se quiere otro.
 
 ## Almacenamiento
 
-Con `DATABASE_URL` configurada, las solicitudes van a la tabla `contact_requests`
-(se crea sola al arrancar, igual que la columna `language` en bases anteriores).
-Sin esa variable se guardan en `data/contact-requests.jsonl`, que sirve en
-desarrollo pero **no en Render**, donde el disco se borra en cada despliegue: en
-producción conviene configurar la base.
+**Hoy el registro real de cada solicitud es el correo.** No hay base de datos
+configurada: sin `DATABASE_URL`, las solicitudes se escriben en
+`data/contact-requests.jsonl`, que sirve en desarrollo pero **no en Render**,
+donde el disco es efímero y ese archivo desaparece en cada reinicio o
+despliegue (el servidor lo avisa en el log al arrancar en producción). Por eso
+el envío del correo no se da nunca por bueno: si Resend falla, la respuesta es
+un error y los datos quedan en el log del servicio.
+
+Cuando haga falta un historial consultable, se crea una base en Neon y se pone
+su cadena en `DATABASE_URL`: el código ya crea la tabla `contact_requests` y la
+columna `language` al arrancar, no hay que migrar nada a mano.
 
 ## Variables de entorno
 

@@ -43,6 +43,11 @@ const ADD_LANGUAGE_COLUMN = `
 export async function initDatabase() {
   if (!pool) {
     console.warn('[db] DATABASE_URL no configurada: las solicitudes se guardarán en data/contact-requests.jsonl')
+    if (isProduction) {
+      // En Render el disco es efímero: ese archivo desaparece en cada reinicio
+      // o despliegue. El correo de aviso es, por ahora, el registro real.
+      console.warn('[db] ATENCIÓN: en producción ese archivo se borra en cada despliegue. El registro fiable es el correo.')
+    }
     return
   }
   await pool.query(CREATE_TABLE)
