@@ -53,6 +53,10 @@ export const env = {
   mailFrom: process.env.CONTACT_FROM_EMAIL ?? process.env.CONTACT_MAIL_FROM ?? 'ColdevIA <ventas@coldevia.com>',
   mailTo: parseList(process.env.CONTACT_TO_EMAIL ?? process.env.CONTACT_MAIL_TO),
 
+  // Zona horaria de la fecha que aparece en el correo de aviso: la de quien
+  // atiende la bandeja, no la del servidor (Render corre en UTC).
+  timezone: process.env.CONTACT_TIMEZONE ?? 'America/Argentina/Buenos_Aires',
+
   // Límite de envíos del formulario por IP.
   contactRate: {
     windowMs: Number(process.env.CONTACT_RATE_WINDOW_MS ?? 60 * 60 * 1000), // 1 hora

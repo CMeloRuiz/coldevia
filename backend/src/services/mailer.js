@@ -24,12 +24,24 @@ const escapeHtml = (value = '') =>
 
 const LANGUAGE_NAMES = { es: 'Español', en: 'Inglés' }
 
-/** Fecha y hora en la zona de Colombia, legible en el correo. */
+/**
+ * Fecha y hora en la zona de quien lee el aviso, con el huso escrito.
+ *
+ * La zona sale de CONTACT_TIMEZONE para que la hora del correo coincida con
+ * el reloj de quien atiende la bandeja. El "GMT-3" evita la duda cuando el
+ * aviso lo lee alguien desde otro país.
+ */
 const formatDate = (date = new Date()) =>
   new Intl.DateTimeFormat('es-CO', {
-    dateStyle: 'full',
-    timeStyle: 'short',
-    timeZone: 'America/Bogota',
+    // Campos sueltos: dateStyle/timeStyle no admiten timeZoneName
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: env.timezone,
+    timeZoneName: 'shortOffset',
   }).format(date)
 
 /**

@@ -131,6 +131,7 @@ Todas están en `.env.example` (sin valores reales). `.env` está en `.gitignore
 | `RESEND_API_KEY`         | Clave de Resend. Sin ella el formulario responde error.                |
 | `CONTACT_FROM_EMAIL`     | Remitente verificado en Resend.                                        |
 | `CONTACT_TO_EMAIL`       | Destinatario(s) del aviso, separados por comas.                        |
+| `CONTACT_TIMEZONE`       | Zona de la fecha del correo (Buenos Aires por defecto).                |
 | `CONTACT_RATE_MAX`       | Envíos permitidos por IP en cada ventana (5 por defecto).              |
 | `CONTACT_RATE_WINDOW_MS` | Duración de la ventana en milisegundos (1 hora por defecto).           |
 
